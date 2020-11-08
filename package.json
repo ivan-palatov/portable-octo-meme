@@ -1,7 +1,7 @@
 {
   "name": "electron-react-typescript",
-  "version": "1.0.0",
-  "description": "An Electron boilerplate including TypeScript, React, Jest and ESLint.",
+  "version": "0.0.1",
+  "description": "An app that does stuff",
   "main": "./dist/main.js",
   "scripts": {
     "dev": "npm-run-all -p dev:react electron:serve",
@@ -18,7 +18,7 @@
     "test": "jest"
   },
   "keywords": [],
-  "author": "Diego Fernandes <diego.schell.f@gmail.com>",
+  "author": "Ivan Palatov <ivanakazver3d@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.12.3",
@@ -88,6 +88,9 @@
     "appId": "your.id",
     "mac": {
       "category": "public.app-category.video"
+    },
+    "win": {
+      "target": "portable"
     },
     "directories": {
       "output": "packages"
