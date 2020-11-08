@@ -52,7 +52,7 @@ function progonka(
 }
 
 ctx.onmessage = (e) => {
-  const { ksi, mu1, mu2, N, M, X, T } = e.data;
+  const { ksi, mu1, mu2, N, M, X, T, rho } = e.data;
   const res = progonka(
     math.parse(ksi),
     math.parse(mu1),
@@ -62,7 +62,39 @@ ctx.onmessage = (e) => {
     X,
     T
   );
-  ctx.postMessage({ res });
+
+  const x = Array(M + 1)
+    .fill(0)
+    .map((_, i) => i * (X / M));
+  const y = Array(N + 1)
+    .fill(0)
+    .map((_, i) => i * (T / N));
+
+  const actualF = Array(N + 1)
+    .fill(0)
+    .map((_, i) =>
+      Array(M + 1)
+        .fill(0)
+        .map((_, j) => math.evaluate(rho, { x: j * (X / M), t: i * (T / N) }))
+    );
+
+  const diff = Array(N + 1)
+    .fill(0)
+    .map((_, i) =>
+      Array(M + 1)
+        .fill(0)
+        .map((_, j) =>
+          math.abs(
+            math.evaluate(rho, { x: j * (X / M), t: i * (T / N) }) - res[i][j]
+          )
+        )
+    );
+
+  ctx.postMessage({
+    plot: { x, y, z: res, type: 'surface' },
+    actualFunction: { x, y, z: actualF, type: 'surface' },
+    difference: { x, y, z: diff, type: 'surface' },
+  });
 };
 
 export default {} as typeof Worker & { new (): Worker };

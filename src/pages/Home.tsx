@@ -18,7 +18,7 @@ const originalData: Data = {
     .map((_, i) =>
       Array(50 + 1)
         .fill(0)
-        .map((_, j) => f.evaluate({ x: i * 0.02, t: j * 0.1 }))
+        .map((_, j) => f.evaluate({ t: i * 0.1, x: j * 0.01 }))
     ),
   type: 'surface',
 };
@@ -32,50 +32,15 @@ const Home: React.FC = () => {
   const [T, setT] = useState(5);
   const [X, setX] = useState(1);
   const [rho, setRho] = useState('e^(-t)*sin(x)');
-  const [data, setData] = useState<Data | null>(null);
-  const [diffData, setDiffData] = useState<Data | null>(null);
-  const [hmm, setHmm] = useState<number[][]>([]);
+  const [data, setData] = useState<{ [x: string]: Data }>({});
 
   const runWorker = () => {
     const worker = new Worker();
-    worker.postMessage({ ksi, mu1, mu2, N, M, T, X });
+    worker.postMessage({ ksi, mu1, mu2, N, M, T, X, rho });
     worker.onerror = console.log;
     worker.onmessage = (e) => {
-      const f = math.parse(rho);
-      const { res } = e.data;
-      setHmm(Array.from(e.data.res));
-      console.log(hmm);
-      setData({
-        x: Array(M + 1)
-          .fill(0)
-          .map((_, i) => i * (X / M)),
-        y: Array(N + 1)
-          .fill(0)
-          .map((_, i) => i * (T / N)),
-        z: res,
-        type: 'surface',
-      });
-
-      setDiffData({
-        x: Array(M + 1)
-          .fill(0)
-          .map((_, i) => i * (X / M)),
-        y: Array(N + 1)
-          .fill(0)
-          .map((_, i) => i * (T / N)),
-        z: Array(M + 1)
-          .fill(0)
-          .map((_, i) =>
-            Array(N + 1)
-              .fill(0)
-              .map((_, j) =>
-                math.abs(
-                  f.evaluate({ x: i * (X / M), t: j * (T / N) }) - res[i][j]
-                )
-              )
-          ),
-        type: 'surface',
-      });
+      const { plot, actualFunction, difference } = e.data;
+      setData({ plot, actualFunction, difference });
     };
   };
 
@@ -88,45 +53,53 @@ const Home: React.FC = () => {
         прогонки
       </Typography>
       <TextField
+        style={{ marginTop: 5 }}
         label="Начальное условие"
         value={ksi}
         onChange={(e) => setKsi(e.target.value)}
       />
       <TextField
+        style={{ marginTop: 5 }}
         label="Граничное условие при x=0"
         value={mu1}
         onChange={(e) => setMu1(e.target.value)}
       />
       <TextField
+        style={{ marginTop: 5 }}
         label={`Граничное условие при x=${X}`}
         value={mu2}
         onChange={(e) => setMu2(e.target.value)}
       />
       <TextField
+        style={{ marginTop: 5 }}
         label="Кол-во разбиений по t"
         type="number"
         value={N}
         onChange={(e) => setN(parseInt(e.target.value))}
       />
       <TextField
+        style={{ marginTop: 5 }}
         label="Кол-во разбиений по x"
         type="number"
         value={M}
         onChange={(e) => setM(parseInt(e.target.value))}
       />
       <TextField
+        style={{ marginTop: 5 }}
         label="Максимальное значение X"
         type="number"
         value={X}
         onChange={(e) => setX(parseInt(e.target.value))}
       />
       <TextField
+        style={{ marginTop: 5 }}
         label="Максимальное значение T"
         type="number"
         value={T}
         onChange={(e) => setT(parseInt(e.target.value))}
       />
       <TextField
+        style={{ marginTop: 5 }}
         label="Функция Pho (для проверки)"
         value={rho}
         onChange={(e) => setRho(e.target.value)}
@@ -139,12 +112,18 @@ const Home: React.FC = () => {
       >
         Вычислить
       </Button>
-      {data && (
-        <Plot data={[data]} layout={{ yaxis: { title: { text: 't' } } }} />
+      {data.plot && (
+        <Plot data={[data.plot]} layout={{ yaxis: { title: { text: 't' } } }} />
       )}
-      {data && (
+      {data.actualFunction && (
         <Plot
-          data={[originalData]}
+          data={[data.actualFunction]}
+          layout={{ yaxis: { title: { text: 't' } } }}
+        />
+      )}
+      {data.difference && (
+        <Plot
+          data={[data.difference]}
           layout={{ yaxis: { title: { text: 't' } } }}
         />
       )}
