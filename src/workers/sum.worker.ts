@@ -6,6 +6,7 @@ function progonka(
   ksi: math.MathNode,
   mu1: math.MathNode,
   mu2: math.MathNode,
+  f: math.MathNode,
   N: number,
   M: number,
   X: number,
@@ -31,7 +32,9 @@ function progonka(
     for (let m = 1; m < M; m++) {
       alpha.push(omega / (1 + 2 * omega - omega * alpha[m - 1]));
       beta.push(
-        (omega * beta[m - 1] + rho[n - 1][m]) / //  + ksi.evaluate({ x: m })
+        (omega * beta[m - 1] +
+          tau * f.evaluate({ t: tau * (n - 1), x: h * m }) +
+          rho[n - 1][m]) /
           (1 + 2 * omega - omega * alpha[m - 1])
       );
     }
@@ -52,11 +55,12 @@ function progonka(
 }
 
 ctx.onmessage = (e) => {
-  const { ksi, mu1, mu2, N, M, X, T, rho } = e.data;
+  const { ksi, mu1, mu2, N, M, X, T, rho, f } = e.data;
   const res = progonka(
     math.parse(ksi),
     math.parse(mu1),
     math.parse(mu2),
+    math.parse(f),
     N,
     M,
     X,
@@ -69,6 +73,13 @@ ctx.onmessage = (e) => {
   const y = Array(N + 1)
     .fill(0)
     .map((_, i) => i * (T / N));
+
+  if (!rho || rho === '' || rho === '0') {
+    ctx.postMessage({
+      plot: { x, y, z: res, type: 'surface' },
+    });
+    return;
+  }
 
   const actualF = Array(N + 1)
     .fill(0)
