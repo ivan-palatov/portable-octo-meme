@@ -1,8 +1,17 @@
-import { CssBaseline } from '@material-ui/core';
+import TeX from '@matejmazur/react-katex';
+import { CssBaseline, Link, makeStyles } from '@material-ui/core';
 import 'katex/dist/katex.min.css';
 import React from 'react';
 import { render } from 'react-dom';
+import {
+  BrowserRouter,
+  Link as RouterLink,
+  Route,
+  Switch,
+} from 'react-router-dom';
 import Home from './pages/Home';
+import Neumann from './pages/Neumann';
+import Rho from './pages/Rho';
 
 const mainElement = document.createElement('div');
 mainElement.setAttribute('id', 'root');
@@ -25,11 +34,43 @@ document.head.appendChild(meta);
 document.head.appendChild(link);
 document.body.appendChild(mainElement);
 
+const useStyles = makeStyles((theme) => ({
+  main: {
+    display: 'flex',
+    justifyContent: 'space-around',
+  },
+}));
+
 const App = () => {
+  const classes = useStyles();
+
   return (
     <>
       <CssBaseline />
-      <Home />
+      <BrowserRouter>
+        <div className={classes.main}>
+          <Link variant="body1" component={RouterLink} to="/">
+            На главную
+          </Link>
+          <Link variant="body1" component={RouterLink} to="/neumann">
+            Проверить вычисления для усл-й Неймана
+          </Link>
+          <Link variant="body1" component={RouterLink} to="/rho">
+            Проверить <TeX math="\rho" />
+          </Link>
+        </div>
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/neumann">
+            <Neumann />
+          </Route>
+          <Route path="/rho">
+            <Rho />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </>
   );
 };

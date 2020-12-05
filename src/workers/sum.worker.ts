@@ -1,110 +1,152 @@
 import * as math from 'mathjs';
+import { areMatricesClose } from '../utils/areMatricesClose';
+import { calcRho } from '../utils/calcRho';
+import { calcU } from '../utils/calcU';
 
 const ctx: Worker = self as any;
 
-function progonka(
-  ksi: math.MathNode,
-  mu1: math.MathNode,
-  mu2: math.MathNode,
-  f: math.MathNode,
-  N: number,
-  M: number,
-  X: number,
-  T: number
-) {
-  const tau = T / N;
-  const h = X / M;
-  const omega = tau / h ** 2;
+interface IData {
+  u10: math.EvalFunction;
+  u20: math.EvalFunction;
+  rho10: math.EvalFunction;
+  rho20: math.EvalFunction;
+  T: number;
+  N: number;
+  M: number;
+  epsilon: number;
+  delta: number;
+  a: number;
+  nu11: number;
+  nu12: number;
+  nu21: number;
+  nu22: number;
+  beta1: number;
+  beta2: number;
+  gamma1: number;
+  gamma2: number;
+  epsilon0: number;
+}
 
-  // Заполняем первый ряд по t из нач. усл.
-  const rho = [
-    Array(M + 1)
-      .fill(0)
-      .map((_, i) => ksi.evaluate({ x: i * h })),
-  ] as number[][];
+function calculate({
+  u10,
+  u20,
+  rho10,
+  rho20,
+  T,
+  N,
+  M,
+  epsilon,
+  delta,
+  a,
+  nu11,
+  nu12,
+  nu21,
+  nu22,
+  beta1,
+  beta2,
+  gamma1,
+  gamma2,
+  epsilon0,
+}: IData) {
+  const h = 1 / M;
 
-  // Заполняем остальные ряды по времени t
-  for (let n = 1; n <= Math.round(N); n++) {
-    const t = tau * n;
-    const alpha = [0];
-    const beta = [mu1.evaluate({ t })];
-    // Вычисление коэф. альфа и бета
-    for (let m = 1; m < M; m++) {
-      alpha.push(omega / (1 + 2 * omega - omega * alpha[m - 1]));
-      beta.push(
-        (omega * beta[m - 1] +
-          tau * f.evaluate({ t: tau * (n - 1), x: h * m }) +
-          rho[n - 1][m]) /
-          (1 + 2 * omega - omega * alpha[m - 1])
-      );
-    }
+  // Заполняем начальные значения u1
+  let u1next: number[][] = Array(N + 1)
+    .fill(0)
+    .map((_, i) =>
+      Array(M + 1)
+        .fill(0)
+        .map((_, j) => u10.evaluate({ x: j * h }))
+    );
 
-    // Обратный ход, вычисление ро
-    const rhon = [...Array(Math.round(M + 1))];
-    rhon[rhon.length - 1] = mu2.evaluate({ t });
-    rhon[0] = mu1.evaluate({ t });
+  // Заполняем начальные значения u2
+  let u2next: number[][] = Array(N + 1)
+    .fill(0)
+    .map((_, i) =>
+      Array(M + 1)
+        .fill(0)
+        .map((_, j) => u20.evaluate({ x: j * h }))
+    );
 
-    for (let i = M - 1; i > 0; i--) {
-      rhon[i] = rhon[i + 1] * alpha[i] + beta[i];
-    }
+  let u1prev: number[][], u2prev: number[][];
 
-    rho.push(rhon);
-  }
+  let k = 0;
+  // Выполняем цикл пока не сойдёмся к k-решению, отличающемуся от соседнего не более чем на epsilon0
+  do {
+    // Вычисляем ро1 и ро2 для известных нам u1 & u2
+    const rho1 = calcRho({ T, M, N, rho0: rho10, u: u1next, epsilon });
+    const rho2 = calcRho({ T, M, N, rho0: rho20, u: u2next, epsilon });
 
-  return rho;
+    u1prev = u1next;
+    u2prev = u2next;
+
+    // Вычисление следующего u1
+    u1next = calcU({
+      T,
+      N,
+      M,
+      rho: rho1,
+      u0: u10,
+      otherU: u2prev,
+      delta,
+      beta: beta1,
+      gamma: gamma1,
+      epsilon,
+      a,
+      nu1: nu11,
+      nu2: nu12,
+    });
+
+    // Вычисление следующего u2
+    u2next = calcU({
+      T,
+      N,
+      M,
+      rho: rho2,
+      u0: u20,
+      otherU: u1prev,
+      delta,
+      beta: beta2,
+      gamma: gamma2,
+      epsilon,
+      a,
+      nu1: nu21,
+      nu2: nu22,
+    });
+
+    k++;
+  } while (
+    (!areMatricesClose(u1prev, u1next, epsilon0) ||
+      !areMatricesClose(u2prev, u2next, epsilon0)) &&
+    k < 10
+  );
+
+  return { u1: u1next, u2: u2next };
 }
 
 ctx.onmessage = (e) => {
-  const { ksi, mu1, mu2, N, M, X, T, rho, f } = e.data;
-  const res = progonka(
-    math.parse(ksi),
-    math.parse(mu1),
-    math.parse(mu2),
-    math.parse(f),
-    N,
+  const { rho10, rho20, u10, u20, M, N, T, ...data } = e.data;
+  const { u1, u2 } = calculate({
+    ...data,
     M,
-    X,
-    T
-  );
+    N,
+    T,
+    rho10: math.parse(rho10),
+    rho20: math.parse(rho20),
+    u10: math.parse(u10),
+    u20: math.parse(u20),
+  });
 
   const x = Array(M + 1)
     .fill(0)
-    .map((_, i) => i * (X / M));
+    .map((_, i) => i * (1 / M));
   const y = Array(N + 1)
     .fill(0)
     .map((_, i) => i * (T / N));
 
-  if (!rho || rho === '' || rho === '0') {
-    ctx.postMessage({
-      plot: { x, y, z: res, type: 'surface' },
-    });
-    return;
-  }
-
-  const actualF = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) => math.evaluate(rho, { x: j * (X / M), t: i * (T / N) }))
-    );
-
-  const diff = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) =>
-          math.abs(
-            math.evaluate(rho, { x: j * (X / M), t: i * (T / N) }) - res[i][j]
-          )
-        )
-    );
-
   ctx.postMessage({
-    plot: { x, y, z: res, type: 'surface' },
-    actualFunction: { x, y, z: actualF, type: 'surface' },
-    difference: { x, y, z: diff, type: 'surface' },
+    plot1: { x, y, z: u1, type: 'surface' },
+    plot2: { x, y, z: u2, type: 'surface' },
   });
 };
 
