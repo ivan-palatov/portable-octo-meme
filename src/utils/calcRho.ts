@@ -14,6 +14,9 @@ export function calcRho({ T, M, N, rho0, u, epsilon, f }: IData) {
   const h = 1 / M;
   const tau = T / N;
 
+  // Вычисление коэф. А
+  const A = -epsilon / Math.pow(h, 2);
+
   // Заполняем первый ряд по t из нач. усл.
   const rho = [
     Array(M + 1)
@@ -22,38 +25,22 @@ export function calcRho({ T, M, N, rho0, u, epsilon, f }: IData) {
   ] as number[][];
 
   // Заполняем остальные ряды по времени t
-  for (let n = 1; n <= Math.round(N); n++) {
+  for (let n = 1; n <= N; n++) {
     const alpha = [1];
     const beta = [0];
     // Вычисление коэф. альфа и бета
     for (let m = 1; m < M; m++) {
-      const denominator =
-        h * h -
-        u[n - 1][m] * tau * h +
-        2 * epsilon * tau -
-        epsilon * tau * alpha[m - 1];
+      // Вычисление коэфициентов B, C, F
+      const B = u[n - 1][m] - epsilon / Math.pow(h, 2);
+      const C = -1 / tau + u[n - 1][m] / h - (2 * epsilon) / Math.pow(h, 2);
+      const F =
+        -rho[n - 1][m] / tau +
+        rho[n - 1][m] * ((u[n][m + 1] - u[n][m]) / h) -
+        f?.evaluate({ t: tau * (n - 1), x: m * h });
 
-      alpha.push((epsilon * tau - tau * h * u[n - 1][m]) / denominator);
-
-      // Для проверки алгоритма
-      if (f !== undefined) {
-        beta.push(
-          (f.evaluate({ t: tau * (n - 1), x: h * m }) +
-            h * h * rho[n - 1][m] -
-            tau * h * rho[n - 1][m] * (u[n][m + 1] - u[n][m]) +
-            epsilon * tau * beta[m - 1]) /
-            denominator
-        );
-      } else {
-        beta.push(
-          (h * h * rho[n - 1][m] -
-            tau * h * rho[n - 1][m] * (u[n][m + 1] - u[n][m]) +
-            epsilon * tau * beta[m - 1]) /
-            denominator
-        );
-      }
+      alpha.push(B / (C - A * alpha[m - 1]));
+      beta.push((F + beta[m - 1] * A) / (C - A * alpha[m - 1]));
     }
-
     // Обратный ход, вычисление ро
     const rhon = [...Array(Math.round(M + 1))];
     rhon[rhon.length - 1] =
@@ -65,6 +52,5 @@ export function calcRho({ T, M, N, rho0, u, epsilon, f }: IData) {
 
     rho.push(rhon);
   }
-
   return rho;
 }
