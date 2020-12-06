@@ -4,23 +4,20 @@ import { calcRho } from '../utils/calcRho';
 const ctx: Worker = self as any;
 
 ctx.onmessage = (e) => {
-  const M = 50,
-    N = 30,
-    T = 1;
+  const { M, N, T, u: ufunc, rho0, rho, epsilon, f } = e.data;
 
   const u = Array(N + 1)
     .fill(0)
     .map((_, i) =>
       Array(M + 1)
         .fill(0)
-        .map((_, j) => math.evaluate('sin(2*pi*x)', { x: j * (1 / M) }))
+        .map((_, j) => math.evaluate(ufunc, { t: i * (T / N), x: j / M }))
     );
 
-  const rho = 'e^(-t)*cos(x*pi)';
   const res = calcRho({
-    rho0: math.parse('cos(pi*x)'),
-    f: math.parse('pi*e^(-t)*(-sin(pi*x)*sin(2*pi*x)+2*cos(pi*x)*cos(2*pi*x))'),
-    epsilon: Math.pow(Math.PI, 2),
+    rho0: math.parse(rho0),
+    f: math.parse(f),
+    epsilon: math.evaluate(epsilon),
     M,
     N,
     T,
