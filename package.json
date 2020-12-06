@@ -12,7 +12,7 @@
     "build": "npm-run-all build:electron build:react",
     "build:run": "npm-run-all build start:electron",
     "build:electron": "webpack --config webpack/electron.webpack.js",
-    "build:react": "webpack --config webpack/react.webpack.js",
+    "build:react": "webpack --config webpack/react.webpack.js && mv _redirects dist/renderer/_redirects",
     "package": "npm-run-all build package:dist",
     "package:dist": "electron-builder --dir --win portable",
     "test": "jest"
@@ -111,23 +111,6 @@
     "files": [
       "package.json",
       "dist/**"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix"
     ]
   }
 }
