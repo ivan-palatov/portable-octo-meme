@@ -12,7 +12,7 @@ interface IData {
 
 export function calcRho({ T, M, N, rho0, u, epsilon, f }: IData) {
   const h = 1 / M;
-  const tau = T / N;
+  const tau = T / N / epsilon;
 
   // Заполняем первый ряд по t из нач. усл.
   const rho = [
@@ -27,15 +27,15 @@ export function calcRho({ T, M, N, rho0, u, epsilon, f }: IData) {
     const alpha = [1];
     const beta = [0];
     // Вычисление коэф. альфа и бета
-    for (let m = 1; m < M; m++) {
+    for (let m = 1; m <= M; m++) {
       // Вычисление коэфициентов A, B, C, F по формулам
-      const A = -u[n - 1][m] / h - epsilon / Math.pow(h, 2);
-      const B = -epsilon / Math.pow(h, 2);
-      const C = -1 / tau - u[n - 1][m] / h - (2 * epsilon) / Math.pow(h, 2);
+      const A = -u[n - 1][m] / h - 1 / Math.pow(h, 2);
+      const B = -1 / Math.pow(h, 2);
+      const C = -1 / tau - u[n - 1][m] / h - (2 * 1) / Math.pow(h, 2);
       const F =
         -rho[n - 1][m] / tau +
         (rho[n - 1][m] * (u[n][m] - u[n][m - 1])) / h -
-        f?.evaluate({ t: tau * (n - 1), x: h * m });
+        f?.evaluate({ t: tau * (n - 1), x: h * m }) / epsilon;
 
       // Вычисление коэф. альфа и бета и добавление их в массивы альф и бет
       alpha.push(B / (C - A * alpha[m - 1]));

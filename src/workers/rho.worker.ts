@@ -11,7 +11,9 @@ ctx.onmessage = (e) => {
     .map((_, i) =>
       Array(M + 1)
         .fill(0)
-        .map((_, j) => math.evaluate(ufunc, { t: i * (T / N), x: j / M }))
+        .map((_, j) =>
+          math.evaluate(`(${ufunc})/(${epsilon})`, { t: i * (T / N), x: j / M })
+        )
     );
 
   const res = calcRho({
