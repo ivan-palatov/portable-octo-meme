@@ -4,8 +4,15 @@ import { calcNeumann } from '../utils/calcNeumann';
 const ctx: Worker = self as any;
 
 ctx.onmessage = (e) => {
-  const { rho0, N, M, T, rho, epsilon } = e.data;
-  const res = calcNeumann(math.parse(rho0), math.evaluate(epsilon), N, M, T);
+  const { rho0, N, M, T, rho, epsilon, f } = e.data;
+  const res = calcNeumann(
+    math.parse(rho0),
+    math.evaluate(epsilon),
+    N,
+    M,
+    T,
+    math.parse(f)
+  );
 
   const x = Array(M + 1)
     .fill(0)

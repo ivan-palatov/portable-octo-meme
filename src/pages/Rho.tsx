@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
   input: {
     marginTop: 10,
+    width: '100%',
   },
 }));
 
@@ -61,7 +62,13 @@ const Rho: React.FC = () => {
 
   return (
     <div
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        maxWidth: '600px',
+        margin: '0 auto',
+      }}
     >
       <Typography variant="body1">
         Вычисление <TeX math="\rho" /> для известного u

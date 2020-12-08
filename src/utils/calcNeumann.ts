@@ -3,7 +3,8 @@ export function calcNeumann(
   epsilon: number,
   N: number,
   M: number,
-  T: number
+  T: number,
+  f: math.EvalFunction
 ) {
   const tau = T / N / epsilon;
   const h = 1 / M;
@@ -23,7 +24,9 @@ export function calcNeumann(
     const beta = [0];
     // Вычисление коэф. альфа и бета
     for (let m = 1; m < M; m++) {
-      const F = rho[n - 1][m] / tau;
+      const F =
+        rho[n - 1][m] / tau -
+        f.evaluate({ t: tau * (n - 1) * epsilon, x: h * m });
 
       alpha.push(A / (C - A * alpha[m - 1]));
       beta.push((F + beta[m - 1] * A) / (C - A * alpha[m - 1]));

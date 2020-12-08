@@ -34,6 +34,7 @@ const Neumann: React.FC = () => {
   const classes = useStyles();
 
   const [rho0, setRho0] = useState('cos(pi*x)');
+  const [f, setF] = useState('0');
   const [epsilon, setEpsilon] = useState('pi^2');
   const [N, setN] = useState(100);
   const [M, setM] = useState(200);
@@ -45,7 +46,7 @@ const Neumann: React.FC = () => {
   const runWorker = () => {
     const worker = new Worker();
     setLoading(true);
-    worker.postMessage({ rho0, N, M, T, rho, epsilon });
+    worker.postMessage({ rho0, N, M, T, rho, epsilon, f });
     worker.onerror = (e) => {
       console.log(e);
       setLoading(false);
@@ -66,7 +67,7 @@ const Neumann: React.FC = () => {
       </Typography>
       <TeX
         block
-        math="\frac{\partial \rho}{\partial t} = \varepsilon\frac{\partial^2 \rho}{\partial x^2},\quad x\in [0,1],\quad t\in [0,T]"
+        math="\frac{\partial \rho}{\partial t} = \varepsilon\frac{\partial^2 \rho}{\partial x^2} + f(x,t),\quad x\in [0,1],\quad t\in [0,T]"
       />
       <TeX
         block
@@ -78,6 +79,12 @@ const Neumann: React.FC = () => {
         label={<TeX math="\rho_0 (x)" />}
         value={rho0}
         onChange={(e) => setRho0(e.target.value)}
+      />
+      <TextField
+        className={classes.input}
+        label={<TeX math="f (x,t)" />}
+        value={f}
+        onChange={(e) => setF(e.target.value)}
       />
       <TextField
         className={classes.input}

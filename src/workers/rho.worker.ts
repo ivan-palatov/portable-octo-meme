@@ -12,7 +12,10 @@ ctx.onmessage = (e) => {
       Array(M + 1)
         .fill(0)
         .map((_, j) =>
-          math.evaluate(`(${ufunc})/(${epsilon})`, { t: i * (T / N), x: j / M })
+          math.evaluate(ufunc, {
+            t: i * (T / N),
+            x: j / M,
+          })
         )
     );
 
