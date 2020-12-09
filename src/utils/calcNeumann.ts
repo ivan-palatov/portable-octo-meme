@@ -25,7 +25,7 @@ export function calcNeumann(
     // Вычисление коэф. альфа и бета
     for (let m = 1; m < M; m++) {
       const F =
-        rho[n - 1][m] / tau -
+        rho[n - 1][m] / tau +
         f.evaluate({ t: tau * (n - 1) * epsilon, x: h * m });
 
       alpha.push(A / (C - A * alpha[m - 1]));

@@ -29,15 +29,24 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 10,
     width: '100%',
   },
+  main: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    maxWidth: '600px',
+    margin: '0 auto',
+  },
 }));
 
 const Rho: React.FC = () => {
   const classes = useStyles();
 
   const [rho0, setRho0] = useState('cos(pi*x)');
-  const [u, setU] = useState('1');
-  const [f, setF] = useState('-pi*e^(-t)*sin(pi*x)');
-  const [epsilon, setEpsilon] = useState('pi^2');
+  const [u, setU] = useState('sin(pi*x)');
+  const [f, setF] = useState(
+    'pi*e^(-t)((cos(pi*x))^2-(sin(pi*x))^2) + (pi^2-0.1)*e^(-t)*cos(pi*x)'
+  );
+  const [epsilon, setEpsilon] = useState('0.1');
   const [N, setN] = useState(100);
   const [M, setM] = useState(200);
   const [T, setT] = useState(1);
@@ -61,15 +70,7 @@ const Rho: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        maxWidth: '600px',
-        margin: '0 auto',
-      }}
-    >
+    <div className={classes.main}>
       <Typography variant="body1">
         Вычисление <TeX math="\rho" /> для известного u
       </Typography>

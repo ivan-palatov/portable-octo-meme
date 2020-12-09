@@ -29,6 +29,13 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 10,
     width: '100%',
   },
+  main: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    maxWidth: '600px',
+    margin: '0 auto',
+  },
 }));
 
 const Home: React.FC = () => {
@@ -74,15 +81,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        maxWidth: '600px',
-        margin: '0 auto',
-      }}
-    >
+    <div className={classes.main}>
       <Typography variant="h6" align="center">
         Численное решение регуляризованной (релаксированной) задачи
       </Typography>

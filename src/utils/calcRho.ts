@@ -29,12 +29,11 @@ export function calcRho({ T, M, N, rho0, u, epsilon, f }: IData) {
     // Вычисление коэф. альфа и бета
     for (let m = 1; m < M; m++) {
       // Вычисление коэфициентов A, B, C, F по формулам
-      const A = -u[n - 1][m] / h - 1 / Math.pow(h, 2);
-      const B = -1 / Math.pow(h, 2);
-      const C = -1 / tau - u[n - 1][m] / h - (2 * 1) / Math.pow(h, 2);
+      const A = u[n][m - 1] / h + 1 / Math.pow(h, 2);
+      const B = 1 / Math.pow(h, 2);
+      const C = 1 / tau + u[n][m] / h + (2 * 1) / Math.pow(h, 2);
       const F =
-        -rho[n - 1][m] / tau +
-        (rho[n - 1][m] * (u[n][m] - u[n][m - 1])) / h -
+        +rho[n - 1][m] / tau +
         f?.evaluate({ t: tau * (n - 1) * epsilon, x: h * m });
 
       // Вычисление коэф. альфа и бета и добавление их в массивы альф и бет
