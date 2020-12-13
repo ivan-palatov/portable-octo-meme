@@ -2,35 +2,15 @@ import * as math from 'mathjs';
 
 interface IData {
   T: number;
-  N: number;
   M: number;
-  rho: number[][];
+  N: number;
   u0: math.EvalFunction;
-  otherU: number[][];
-  delta: number;
-  epsilon: number;
-  beta: number;
-  gamma: number;
-  nu1: number;
-  nu2: number;
-  a: number;
+  rho: number[][];
+  V: number;
+  f?: math.EvalFunction;
 }
 
-export function calcU({
-  T,
-  N,
-  M,
-  rho,
-  u0,
-  otherU,
-  delta,
-  epsilon,
-  beta,
-  gamma,
-  nu1,
-  nu2,
-  a,
-}: IData) {
+export function calcU({ T, M, N, rho, u0, V, f }: IData) {
   const h = 1 / M;
   const tau = T / N;
 
@@ -42,47 +22,43 @@ export function calcU({
   ] as number[][];
 
   // Заполняем остальные ряды по времени t
-  for (let n = 1; n <= Math.round(N); n++) {
+  for (let n = 1; n <= N; n++) {
+    // Из первого граничного условия Неймана
     const alpha = [0];
-    const zeta = [0];
+    const beta = [0];
     // Вычисление коэф. альфа и бета
     for (let m = 1; m < M; m++) {
-      const denominator =
-        h * h * rho[n - 1][m] -
-        2 * tau * h * u[n - 1][m] * rho[n - 1][m] -
-        epsilon * tau * (rho[n][m + 1] - rho[n][m]) +
-        2 * tau * nu1 -
-        tau * nu1 * alpha[m - 1];
+      // Вычисление коэфициентов A, B, C, F по формулам
+      const A = (rho[n - 1][m] * u[n - 1][m]) / h + V / h ** 2;
+      const B = V / h ** 2;
+      const C =
+        rho[n - 1][m] / tau +
+        (rho[n - 1][m] * u[n - 1][m]) / h +
+        (2 * V) / h ** 2;
+      const F =
+        (rho[n - 1][m] * u[n - 1][m]) / tau +
+        f?.evaluate({ t: tau * (n - 1), x: h * m });
+      // const A = (rho[n - 1][m] * u[n - 1][m]) / (2 * h) + V / h ** 2;
+      // const B = (-rho[n - 1][m] * u[n - 1][m]) / (2 * h) + V / h ** 2;
+      // const C = rho[n - 1][m] / tau + (2 * V) / h ** 2;
+      // const F =
+      //   (rho[n - 1][m] * u[n - 1][m]) / tau +
+      //   f?.evaluate({ t: tau * (n - 1), x: h * m });
 
-      alpha.push(
-        (tau *
-          (-2 * h * u[n - 1][m] * rho[n - 1][m] -
-            epsilon * (rho[n][m + 1] - rho[n][m]) +
-            nu1)) /
-          denominator
-      );
-
-      zeta.push(
-        (-u[n - 1][m] * h * h * (rho[n][m] - rho[n - 1][m]) +
-          h * h * rho[n - 1][m] * u[n - 1][m] -
-          Math.pow(u[n - 1][m], 2) * tau * h * (rho[n][m + 1] - rho[n][m]) +
-          nu1 * zeta[m - 1] * tau +
-          tau * nu2 * (otherU[n][m + 1] - 2 * otherU[n][m] + otherU[n][m - 1]) +
-          a * h * h * tau * (otherU[n - 1][m] - u[n - 1][m])) /
-          // TODO: добавить производные по x от ро в степени
-          denominator
-      );
+      // Вычисление коэф. альфа и бета и добавление их в массивы альф и бет
+      alpha.push(B / (C - A * alpha[m - 1]));
+      beta.push((F + beta[m - 1] * A) / (C - A * alpha[m - 1]));
     }
 
     // Обратный ход, вычисление ро
     const un = [...Array(Math.round(M + 1))];
+    // Из второго граничного условия Неймана
     un[un.length - 1] = 0;
-    un[0] = 0;
 
-    for (let i = M - 1; i > 0; i--) {
-      un[i] = un[i + 1] * alpha[i] + zeta[i];
+    for (let i = M - 1; i >= 0; i--) {
+      un[i] = un[i + 1] * alpha[i] + beta[i];
     }
-
+    // Добавление временного слоя к массиву всех временных слоев ро
     u.push(un);
   }
 

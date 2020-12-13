@@ -44,7 +44,7 @@ const Rho: React.FC = () => {
   const [rho0, setRho0] = useState('cos(pi*x)');
   const [u, setU] = useState('sin(pi*x)');
   const [f, setF] = useState(
-    'pi*e^(-t)((cos(pi*x))^2-(sin(pi*x))^2) + (pi^2-0.1)*e^(-t)*cos(pi*x)'
+    'pi*e^(-t)((cos(pi*x))^2-(sin(pi*x))^2) + (pi^2*0.1-1)*e^(-t)*cos(pi*x)'
   );
   const [epsilon, setEpsilon] = useState('0.1');
   const [N, setN] = useState(100);

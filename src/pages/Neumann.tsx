@@ -43,7 +43,7 @@ const Neumann: React.FC = () => {
 
   const [rho0, setRho0] = useState('cos(pi*x)');
   const [f, setF] = useState('0');
-  const [epsilon, setEpsilon] = useState('pi^2');
+  const [epsilon, setEpsilon] = useState('1/pi^2');
   const [N, setN] = useState(100);
   const [M, setM] = useState(200);
   const [T, setT] = useState(1);

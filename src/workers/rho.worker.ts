@@ -49,11 +49,14 @@ ctx.onmessage = (e) => {
     .map((_, i) =>
       Array(M + 1)
         .fill(0)
-        .map((_, j) =>
-          math.abs(
-            math.evaluate(rho, { x: j * (1 / M), t: i * (T / N) }) - res[i][j]
-          )
-        )
+        .map((_, j) => {
+          const actual = actualF[i][j];
+          if (actual === 0) {
+            return math.abs(actual - res[i][j]);
+          } else {
+            return math.abs((actual - res[i][j]) / actual);
+          }
+        })
     );
 
   ctx.postMessage({

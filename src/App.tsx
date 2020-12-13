@@ -12,6 +12,7 @@ import {
 import Home from './pages/Home';
 import Neumann from './pages/Neumann';
 import Rho from './pages/Rho';
+import U from './pages/U';
 
 const mainElement = document.createElement('div');
 mainElement.setAttribute('id', 'root');
@@ -52,11 +53,14 @@ const App = () => {
           <Link variant="body1" component={RouterLink} to="/">
             На главную
           </Link>
-          <Link variant="body1" component={RouterLink} to="/neumann">
-            Проверить вычисления для усл-й Неймана
+          <Link variant="body1" component={RouterLink} to="/u">
+            Проверить <TeX math="u" />
           </Link>
           <Link variant="body1" component={RouterLink} to="/rho">
             Проверить <TeX math="\rho" />
+          </Link>
+          <Link variant="body1" component={RouterLink} to="/neumann">
+            Проверить вычисления для усл-й Неймана
           </Link>
         </div>
         <Switch>
@@ -68,6 +72,9 @@ const App = () => {
           </Route>
           <Route path="/rho">
             <Rho />
+          </Route>
+          <Route path="/u">
+            <U />
           </Route>
         </Switch>
       </BrowserRouter>

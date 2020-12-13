@@ -1,7 +1,7 @@
 import * as math from 'mathjs';
 import { areMatricesClose } from '../utils/areMatricesClose';
 import { calcRho } from '../utils/calcRho';
-import { calcU } from '../utils/calcU';
+import { calcU } from '../utils/calcUOther';
 
 const ctx: Worker = self as any;
 
