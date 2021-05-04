@@ -1,25 +1,18 @@
-import * as math from 'mathjs';
-
-interface IData {
-  T: number;
-  M: number;
-  N: number;
-  u0: math.EvalFunction;
-  rho: number[][];
-  V: number;
-  f?: math.EvalFunction;
-}
-
-export function calcU({ T, M, N, rho, u0, V, f }: IData) {
-  const h = 1 / M;
-  const tau = T / N;
-
+export function calcMainU(
+  u0: number[],
+  rho: number[][],
+  otherU: number[][],
+  a: number,
+  v: number,
+  vOther: number,
+  M: number,
+  N: number,
+  tau: number,
+  h: number,
+  f?: number[][]
+): number[][] {
   // Заполняем первый ряд по t из нач. усл.
-  const u = [
-    Array(M + 1)
-      .fill(0)
-      .map((_, i) => u0.evaluate({ x: i * h })),
-  ] as number[][];
+  const u = [u0];
 
   // Заполняем остальные ряды по времени t
   for (let n = 1; n <= N; n++) {
@@ -29,15 +22,16 @@ export function calcU({ T, M, N, rho, u0, V, f }: IData) {
     // Вычисление коэф. альфа и бета
     for (let m = 1; m < M; m++) {
       // Вычисление коэфициентов A, B, C, F по формулам
-      const A = (rho[n - 1][m] * u[n - 1][m]) / h + V / h ** 2;
-      const B = V / h ** 2;
+      const A = (rho[n - 1][m] * u[n - 1][m]) / h + v / h ** 2;
+      const B = v / h ** 2;
       const C =
         rho[n - 1][m] / tau +
         (rho[n - 1][m] * u[n - 1][m]) / h +
-        (2 * V) / h ** 2;
+        (2 * v) / h ** 2;
       const F =
         (rho[n - 1][m] * u[n - 1][m]) / tau +
-        f?.evaluate({ t: tau * (n - 1), x: h * m });
+        a * (otherU[n - 1][m] - u[n - 1][m]) +
+        (f ? f[n - 1][m] : 0); // возможно нужна еще производная (по х) другой компоненты умн. на её коэф. v
       // const A = (rho[n - 1][m] * u[n - 1][m]) / (2 * h) + V / h ** 2;
       // const B = (-rho[n - 1][m] * u[n - 1][m]) / (2 * h) + V / h ** 2;
       // const C = rho[n - 1][m] / tau + (2 * V) / h ** 2;

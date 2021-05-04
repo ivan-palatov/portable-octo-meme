@@ -51,11 +51,11 @@ ctx.onmessage = (e) => {
         .fill(0)
         .map((_, j) => {
           const actual = actualF[i][j];
-          if (actual === 0) {
-            return math.abs(actual - res[i][j]);
-          } else {
-            return math.abs((actual - res[i][j]) / actual);
-          }
+          // if (math.abs(actual) <= 0.00001) {
+          return math.abs(actual - res[i][j]);
+          // } else {
+          //   return math.abs((actual - res[i][j]) / actual);
+          // }
         })
     );
 

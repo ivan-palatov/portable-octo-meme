@@ -1,4 +1,3 @@
-import TeX from '@matejmazur/react-katex';
 import { CssBaseline, Link, makeStyles } from '@material-ui/core';
 import 'katex/dist/katex.min.css';
 import React from 'react';
@@ -9,8 +8,7 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-import Home from './pages/Home';
-import Neumann from './pages/Neumann';
+import Result from './pages/Result';
 import Rho from './pages/Rho';
 import U from './pages/U';
 
@@ -53,28 +51,25 @@ const App = () => {
           <Link variant="body1" component={RouterLink} to="/">
             На главную
           </Link>
-          <Link variant="body1" component={RouterLink} to="/u">
-            Проверить <TeX math="u" />
-          </Link>
           <Link variant="body1" component={RouterLink} to="/rho">
-            Проверить <TeX math="\rho" />
+            Модельная задача 1
           </Link>
-          <Link variant="body1" component={RouterLink} to="/neumann">
-            Проверить вычисления для усл-й Неймана
+          <Link variant="body1" component={RouterLink} to="/u">
+            Модельная задача 2
+          </Link>
+          <Link variant="body1" component={RouterLink} to="/result">
+            Регуляризованная задача
           </Link>
         </div>
         <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/neumann">
-            <Neumann />
-          </Route>
           <Route path="/rho">
             <Rho />
           </Route>
           <Route path="/u">
             <U />
+          </Route>
+          <Route path="/" exact>
+            <Result />
           </Route>
         </Switch>
       </BrowserRouter>

@@ -71,9 +71,7 @@ const U: React.FC = () => {
 
   return (
     <div className={classes.main}>
-      <Typography variant="body1">
-        Вычисление <TeX math="\rho" /> для известного u
-      </Typography>
+      <Typography variant="h6">Модельная задача 2</Typography>
       <TeX
         block
         math="\rho\frac{\partial u}{\partial t} + \rho u\frac{\partial u}{\partial x}=V\frac{\partial^2 u}{\partial x^2} + f(x,t),\quad x\in [0,1],\quad t\in [0,T]"
