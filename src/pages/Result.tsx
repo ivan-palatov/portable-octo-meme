@@ -25,7 +25,7 @@ const Result: React.FC = () => {
       />
       <TeX
         block
-        math="\rho_i\frac{\partial u_i}{\partial t} + \rho_i u_i\frac{\partial u_i}{\partial x}=v_{i1}\frac{\partial^2 u_1}{\partial x^2} + v_{i2}\frac{\partial^2 u_2}{\partial x^2} + (-1)^{i+1}a(u_2-u_1)"
+        math="\rho_i\frac{\partial u_i}{\partial t} + \rho_i u_i\frac{\partial u_i}{\partial x}=\frac{\partial}{\partial x}\left(v_{i1}\frac{\partial u_1}{\partial x} + v_{i2}\frac{\partial u_2}{\partial x}\right) + (-1)^{i+1}a(u_2-u_1)"
       />
       <TeX block math="x\in [0,1],\quad t\in [0,T],\quad i=1,2" />
       <TeX

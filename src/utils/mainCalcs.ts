@@ -65,6 +65,7 @@ export function calcMain(params: IData) {
       params.a,
       params.v11,
       params.v12,
+      params.epsilon,
       params.M,
       params.N,
       params.tau,
@@ -76,8 +77,9 @@ export function calcMain(params: IData) {
       current.rho2,
       previous.u1, // возможно, лучше взять current.u1
       params.a,
-      params.v22,
+      params.v22, // возможно, нужно поменять местами
       params.v21,
+      params.epsilon,
       params.M,
       params.N,
       params.tau,
@@ -85,6 +87,7 @@ export function calcMain(params: IData) {
     );
 
     i++;
+    console.log(i);
   } while (
     !areMatricesClose(previous.u1, current.u1, params.epsilon0) ||
     !areMatricesClose(previous.u2, current.u2, params.epsilon0) ||
