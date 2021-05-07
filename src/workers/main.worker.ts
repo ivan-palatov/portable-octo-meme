@@ -1,5 +1,7 @@
 import * as math from 'mathjs';
-import { calcMain } from '../utils/mainCalcs';
+import { calcMain } from '../utils/calcMain';
+import { makeArray } from '../utils/makeArray';
+import { makeMatrix } from '../utils/makeMatrix';
 
 const ctx: Worker = self as any;
 
@@ -9,34 +11,18 @@ ctx.onmessage = (e) => {
   const h = 1 / M;
   const tau = T / N;
 
-  const x = Array(M + 1)
-    .fill(0)
-    .map((_, i) => i * h);
-  const t = Array(N + 1)
-    .fill(0)
-    .map((_, i) => i * tau);
+  const x = makeArray(M + 1, (i) => i * h);
+  const t = makeArray(N + 1, (i) => i * tau);
 
-  const rho10 = Array(M + 1)
-    .fill(0)
-    .map((_, j) => math.evaluate(data.rho10, { x: x[j] }));
-  const rho20 = Array(M + 1)
-    .fill(0)
-    .map((_, j) => math.evaluate(data.rho20, { x: x[j] }));
+  const rho10 = makeArray(M + 1, (i) => math.evaluate(data.rho10, { x: x[i] }));
+  const rho20 = makeArray(M + 1, (i) => math.evaluate(data.rho20, { x: x[i] }));
 
-  const u10 = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) => math.evaluate(data.u10, { x: x[j] }))
-    );
-  const u20 = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) => math.evaluate(data.u20, { x: x[j] }))
-    );
+  const u10 = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.evaluate(data.u10, { x: x[j] })
+  );
+  const u20 = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.evaluate(data.u20, { x: x[j] })
+  );
 
   const results = calcMain({
     M,

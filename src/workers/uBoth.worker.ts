@@ -1,5 +1,7 @@
 import * as math from 'mathjs';
 import { calcBothU } from '../utils/calcBothU';
+import { makeArray } from '../utils/makeArray';
+import { makeMatrix } from '../utils/makeMatrix';
 
 const ctx: Worker = self as any;
 
@@ -8,54 +10,31 @@ ctx.onmessage = (e) => {
   const h = 1 / M;
   const tau = T / N;
 
-  const x = Array(M + 1)
-    .fill(0)
-    .map((_, i) => i * h);
+  const x = makeArray(M + 1, (i) => i * h);
+  const t = makeArray(N + 1, (i) => i * tau);
 
-  const t = Array(N + 1)
-    .fill(0)
-    .map((_, i) => i * tau);
+  const U0 = makeArray(M + 1, (i) =>
+    math.matrix([
+      [math.evaluate(data.u10, { x: x[i] })],
+      [math.evaluate(data.u20, { x: x[i] })],
+    ])
+  );
 
-  const U0 = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) =>
-          math.matrix([
-            [math.evaluate(data.u10, { x: x[j] })],
-            [math.evaluate(data.u20, { x: x[j] })],
-          ])
-        )
-    );
-
-  const Rho = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) =>
-          math.matrix([
-            [math.evaluate(data.rho1, { x: x[j], t: t[i] }), 0],
-            [0, math.evaluate(data.rho2, { x: x[j], t: t[i] })],
-          ])
-        )
-    );
+  const Rho = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.matrix([
+      [math.evaluate(data.rho1, { x: x[j], t: t[i] }), 0],
+      [0, math.evaluate(data.rho2, { x: x[j], t: t[i] })],
+    ])
+  );
 
   const F =
     data.f1 && data.f2
-      ? Array(N + 1)
-          .fill(0)
-          .map((_, i) =>
-            Array(M + 1)
-              .fill(0)
-              .map((_, j) =>
-                math.matrix([
-                  [math.evaluate(data.f1, { x: x[j], t: t[i] })],
-                  [math.evaluate(data.f2, { x: x[j], t: t[i] })],
-                ])
-              )
-          )
+      ? makeMatrix(N + 1, M + 1, (i, j) =>
+          math.matrix([
+            [math.evaluate(data.f1, { x: x[j], t: t[i] })],
+            [math.evaluate(data.f2, { x: x[j], t: t[i] })],
+          ])
+        )
       : undefined;
 
   const V = math.matrix([
@@ -82,37 +61,19 @@ ctx.onmessage = (e) => {
     });
   });
 
-  const u1Real = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) => math.evaluate(data.u1Real, { x: x[j], t: t[i] }))
-    );
+  const u1Real = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.evaluate(data.u1Real, { x: x[j], t: t[i] })
+  );
+  const u2Real = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.evaluate(data.u2Real, { x: x[j], t: t[i] })
+  );
 
-  const u2Real = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) => math.evaluate(data.u2Real, { x: x[j], t: t[i] }))
-    );
-
-  const diff1 = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) => math.abs(u1Real[i][j] - result.u1[i][j]))
-    );
-
-  const diff2 = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) => math.abs(u2Real[i][j] - result.u2[i][j]))
-    );
+  const diff1 = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.abs(u1Real[i][j] - result.u1[i][j])
+  );
+  const diff2 = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.abs(u2Real[i][j] - result.u2[i][j])
+  );
 
   ctx.postMessage({
     u1: { x, y: t, z: result.u1, type: 'surface' },

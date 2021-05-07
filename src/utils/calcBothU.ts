@@ -1,7 +1,7 @@
 import * as math from 'mathjs';
 
 export function calcBothU(
-  U0: math.Matrix[][],
+  U0: math.Matrix[],
   Rho: math.Matrix[][],
   V: math.Matrix,
   K: math.Matrix,
@@ -17,17 +17,46 @@ export function calcBothU(
         .map((_, j) => math.matrix([[0], [0]]))
     )
 ): math.Matrix[][] {
-  const U = [...U0];
+  const U = [U0];
 
   // Заполняем остальные ряды по времени t
   for (let n = 1; n <= N; n++) {
     // Из левого граничного условия Дирихле
     const g = [math.matrix([[0], [0]])];
+    // const q = [
+    //   math.matrix([
+    //     [0, 0],
+    //     [0, 0],
+    //   ]),
+    // ];
     const q = [
-      math.matrix([
-        [0, 0],
-        [0, 0],
-      ]),
+      math.multiply(
+        math.inv(
+          math.add(
+            math.add(
+              math.multiply(1 / tau, Rho[n - 1][0]),
+              math.multiply(
+                1 / h,
+                math.matrix([
+                  [Rho[n - 1][0].get([0, 0]) * U[n - 1][0].get([0, 0]), 0],
+                  [0, Rho[n - 1][0].get([1, 0]) * U[n - 1][0].get([1, 0])],
+                ])
+              )
+            ),
+            math.multiply(2 / h ** 2, V)
+          ) as math.Matrix
+        ),
+        math.subtract(
+          math.multiply(
+            -1 / h,
+            math.matrix([
+              [Rho[n - 1][0].get([0, 0]) * U[n - 1][0].get([0, 0]), 0],
+              [0, Rho[n - 1][0].get([1, 0]) * U[n - 1][0].get([1, 0])],
+            ])
+          ),
+          math.multiply(1 / h ** 2, V)
+        )
+      ),
     ];
 
     let inverseW: math.Matrix;
@@ -81,7 +110,7 @@ export function calcBothU(
     for (let i = M - 1; i >= 0; i--) {
       Un[i] = math.subtract(
         g[i],
-        math.multiply(q[i], U[n][i + 1])
+        math.multiply(q[i], Un[i + 1])
       ) as math.Matrix;
     }
     // Добавление временного слоя к массиву всех временных слоев ро
