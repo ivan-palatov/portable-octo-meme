@@ -8,6 +8,7 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
+import BothU from './pages/BothU';
 import Result from './pages/Result';
 import Rho from './pages/Rho';
 import U from './pages/U';
@@ -57,8 +58,8 @@ const App = () => {
           <Link variant="body1" component={RouterLink} to="/u">
             Модельная задача 2
           </Link>
-          <Link variant="body1" component={RouterLink} to="/result">
-            Регуляризованная задача
+          <Link variant="body1" component={RouterLink} to="/both-u">
+            Система для Ui
           </Link>
         </div>
         <Switch>
@@ -67,6 +68,9 @@ const App = () => {
           </Route>
           <Route path="/u">
             <U />
+          </Route>
+          <Route path="/both-u">
+            <BothU />
           </Route>
           <Route path="/" exact>
             <Result />

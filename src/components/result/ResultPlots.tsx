@@ -1,12 +1,12 @@
 import { Data } from 'plotly.js';
 import React from 'react';
-import Plot3d from './Plot3d';
+import Plot3d from '../Plot3d';
 
 interface IProps {
   data: { u1: Data; u2: Data; rho1: Data; rho2: Data };
 }
 
-const Plots: React.FC<IProps> = ({ data }) => {
+const ResultPlots: React.FC<IProps> = ({ data }) => {
   if (!data.u1) return null;
 
   return (
@@ -19,4 +19,4 @@ const Plots: React.FC<IProps> = ({ data }) => {
   );
 };
 
-export default React.memo(Plots);
+export default React.memo(ResultPlots);
