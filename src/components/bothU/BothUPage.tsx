@@ -1,8 +1,8 @@
 import { Data } from 'plotly.js';
 import React, { useReducer } from 'react';
-import Worker from '../../workers/uMain.worker';
-import UForm, { FormTypes } from './UForm';
-import UPlots from './UPlots';
+import Worker from '../../workers/uBoth.worker';
+import BothUForm, { FormTypes } from './BothUForm';
+import BothUPlots from './BothUPlots';
 
 interface IProps {}
 
@@ -19,9 +19,12 @@ interface IAction {
 const initialState = {
   isLoading: false,
   data: {} as {
-    u: Data;
-    uReal: Data;
-    diff: Data;
+    u1: Data;
+    u2: Data;
+    u1Real: Data;
+    u2Real: Data;
+    diff1: Data;
+    diff2: Data;
   },
 };
 
@@ -39,7 +42,7 @@ function reducer(
   }
 }
 
-const UPage: React.FC<IProps> = () => {
+const BothUPage: React.FC<IProps> = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   function runWorker(values: FormTypes) {
@@ -62,10 +65,10 @@ const UPage: React.FC<IProps> = () => {
 
   return (
     <>
-      <UForm runWorker={runWorker} isLoading={state.isLoading} />
-      <UPlots data={state.data} />
+      <BothUForm runWorker={runWorker} isLoading={state.isLoading} />
+      <BothUPlots data={state.data} />
     </>
   );
 };
 
-export default UPage;
+export default BothUPage;

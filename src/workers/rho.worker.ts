@@ -5,6 +5,7 @@ const ctx: Worker = self as any;
 
 ctx.onmessage = (e) => {
   const { M, N, T, u: ufunc, rho0, rho, epsilon, f } = e.data;
+  console.log('Starting rho worker');
 
   const u = Array(N + 1)
     .fill(0)

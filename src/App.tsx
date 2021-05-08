@@ -12,6 +12,7 @@ import BothU from './pages/BothU';
 import Result from './pages/Result';
 import Rho from './pages/Rho';
 import U from './pages/U';
+import UMain from './pages/UMain';
 
 const mainElement = document.createElement('div');
 mainElement.setAttribute('id', 'root');
@@ -58,6 +59,9 @@ const App = () => {
           <Link variant="body1" component={RouterLink} to="/u">
             Модельная задача 2
           </Link>
+          <Link variant="body1" component={RouterLink} to="/u-main">
+            Модельная задача 2.5
+          </Link>
           <Link variant="body1" component={RouterLink} to="/both-u">
             Система для Ui
           </Link>
@@ -68,6 +72,9 @@ const App = () => {
           </Route>
           <Route path="/u">
             <U />
+          </Route>
+          <Route path="/u-main">
+            <UMain />
           </Route>
           <Route path="/both-u">
             <BothU />

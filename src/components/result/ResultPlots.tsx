@@ -1,3 +1,4 @@
+import TeX from '@matejmazur/react-katex';
 import { Data } from 'plotly.js';
 import React from 'react';
 import Plot3d from '../Plot3d';
@@ -11,10 +12,10 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
 
   return (
     <>
-      <Plot3d data={[data.u1]} title="U1" />
-      <Plot3d data={[data.u2]} title="U2" />
-      <Plot3d data={[data.rho1]} title="Rho1" />
-      <Plot3d data={[data.rho2]} title="Rho2" />
+      <Plot3d data={[data.u1]} title={<TeX block math="u_1(x, t)" />} />
+      <Plot3d data={[data.u2]} title={<TeX block math="u_2(x, t)" />} />
+      <Plot3d data={[data.rho1]} title={<TeX block math="\rho_1(x, t)" />} />
+      <Plot3d data={[data.rho2]} title={<TeX block math="\rho_2(x, t)" />} />
     </>
   );
 };

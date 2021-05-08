@@ -1,4 +1,5 @@
 import * as math from 'mathjs';
+import { FormTypes } from '../components/bothU/BothUForm';
 import { calcBothU } from '../utils/calcBothU';
 import { makeArray } from '../utils/makeArray';
 import { makeMatrix } from '../utils/makeMatrix';
@@ -6,7 +7,9 @@ import { makeMatrix } from '../utils/makeMatrix';
 const ctx: Worker = self as any;
 
 ctx.onmessage = (e) => {
-  const { a, v11, v12, v21, v22, N, M, T, ...data } = e.data;
+  const { a, v11, v12, v21, v22, N, M, T, ...data } = e.data as FormTypes;
+  console.log('Starting uBoth worker');
+
   const h = 1 / M;
   const tau = T / N;
 

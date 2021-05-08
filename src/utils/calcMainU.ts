@@ -38,6 +38,7 @@ export function calcMainU(
       //     h ** 2 -
       //   a * (otherU[n - 1][m] - u[n - 1][m]) -
       //   (f ? f[n - 1][m] : 0);
+
       const A = (rho[n - 1][m] * u[n - 1][m]) / h + v / h ** 2;
       const B = v / h ** 2;
       const C =

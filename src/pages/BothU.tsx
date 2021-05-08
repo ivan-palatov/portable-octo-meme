@@ -1,7 +1,7 @@
 import TeX from '@matejmazur/react-katex';
 import { makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
-import UPage from '../components/u/UPage';
+import BothUPage from '../components/bothU/BothUPage';
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -29,7 +29,7 @@ const BothU: React.FC = () => {
         math="u_i\Big|_{x=0} = 0,\quad u_i\Big|_{x=1} = 0,\quad i=1,2"
       />
       <TeX block math="u_i\Big|_{t=0} = u_i^0(x),\quad i=1,2" />
-      <UPage />
+      <BothUPage />
     </div>
   );
 };

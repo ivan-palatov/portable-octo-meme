@@ -1,6 +1,7 @@
+import { Typography } from '@material-ui/core';
 import { Data } from 'plotly.js';
 import React, { useReducer } from 'react';
-import Worker from '../../workers/uBoth.worker';
+import Worker from '../../workers/main.worker';
 import ResultForm, { FormTypes } from './ResultForm';
 import ResultPlots from './ResultPlots';
 
@@ -64,6 +65,11 @@ const ResultPage: React.FC<IProps> = () => {
   return (
     <>
       <ResultForm runWorker={runWorker} isLoading={state.isLoading} />
+      {state.iterations !== 0 && (
+        <Typography variant="h6">
+          Количество итераций: {state.iterations}
+        </Typography>
+      )}
       <ResultPlots data={state.data} />
     </>
   );

@@ -1,4 +1,5 @@
 import * as math from 'mathjs';
+import { FormTypes } from '../components/result/ResultForm';
 import { calcMain } from '../utils/calcMain';
 import { makeArray } from '../utils/makeArray';
 import { makeMatrix } from '../utils/makeMatrix';
@@ -6,7 +7,20 @@ import { makeMatrix } from '../utils/makeMatrix';
 const ctx: Worker = self as any;
 
 ctx.onmessage = (e) => {
-  const { M, N, T, a, v11, v12, v21, v22, epsilon, epsilon0, ...data } = e.data;
+  const {
+    M,
+    N,
+    T,
+    a,
+    v11,
+    v12,
+    v21,
+    v22,
+    epsilon,
+    epsilon0,
+    ...data
+  } = e.data as FormTypes;
+  console.log('Starting main worker');
 
   const h = 1 / M;
   const tau = T / N;
