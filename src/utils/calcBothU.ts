@@ -33,22 +33,22 @@ export function calcBothU(
       ]);
 
       // Вычисление прогоночных коэффициентов
-      const A = math.add(math.multiply(1 / h, G), math.multiply(1 / h ** 2, V));
-      const B = math.multiply(1 / h ** 2, V);
+      const A = math.add(math.multiply(1 / h, G), math.multiply(1 / h ** 2, V)); // m - 1
+      const B = math.multiply(1 / h ** 2, V); // m + 1
       const C = math.add(
         math.add(
           math.multiply(1 / tau, Rho[n - 1][m]),
           math.multiply(1 / h, G)
         ),
         math.multiply(2 / h ** 2, V)
-      );
+      ); // m
       const Fn = math.add(
         math.add(
           math.multiply(math.multiply(1 / tau, Rho[n - 1][m]), U[n - 1][m]),
           math.multiply(K, U[n - 1][m])
         ),
         F[n - 1][m]
-      );
+      ); // n - 1
 
       const inverseW = math.inv(
         math.subtract(C, math.multiply(A, alpha[m - 1])) as math.Matrix
