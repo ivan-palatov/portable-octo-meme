@@ -23,43 +23,15 @@ export function calcMainU(
     // Вычисление коэф. альфа и бета
     for (let m = 1; m < M; m++) {
       // Вычисление коэфициентов A, B, C, F по формулам
-      // const A =
-      //   -(rho[n - 1][m] * u[n - 1][m]) / (2 * h) -
-      //   (epsilon * (rho[n][m + 1] - rho[n][m - 1])) / (4 * h ** 2) -
-      //   v / h ** 2;
-      // const C = rho[n - 1][m] / tau + (2 * v) / h ** 2;
-      // const B =
-      //   (rho[n - 1][m] * u[n - 1][m]) / (2 * h) +
-      //   (epsilon * (rho[n][m + 1] - rho[n][m - 1])) / (4 * h ** 2) -
-      //   v / h ** 2;
-      // const F =
-      //   -rho[n - 1][m] / tau -
-      //   (vOther * (otherU[n][m + 1] - 2 * otherU[n][m] + otherU[n][m - 1])) /
-      //     h ** 2 -
-      //   a * (otherU[n - 1][m] - u[n - 1][m]) -
-      //   (f ? f[n - 1][m] : 0);
-
-      const A = (rho[n - 1][m] * u[n - 1][m]) / h + v / h ** 2;
-      const B = v / h ** 2;
-      const C =
-        rho[n - 1][m] / tau +
-        (rho[n - 1][m] * u[n - 1][m]) / h +
-        (2 * v) / h ** 2;
+      const A = +(rho[n - 1][m] * u[n - 1][m]) / (2 * h) + v / h ** 2; // m - 1
+      const B = -(rho[n - 1][m] * u[n - 1][m]) / (2 * h) + v / h ** 2; // m + 1
+      const C = rho[n - 1][m] / tau + (2 * v) / h ** 2; // m
       const F =
-        (rho[n - 1][m] * u[n - 1][m]) / tau +
-        /* возможно не нужно */
+        +(rho[n - 1][m] * u[n - 1][m]) / tau +
         vOther *
           ((otherU[n][m - 1] - 2 * otherU[n][m] + otherU[n][m + 1]) / h ** 2) +
-        /* ^^ */
-        a * (otherU[n - 1][m] - u[n - 1][m]) +
+        a * (otherU[n][m] - u[n - 1][m]) +
         (f ? f[n - 1][m] : 0);
-
-      // const A = (rho[n - 1][m] * u[n - 1][m]) / (2 * h) + V / h ** 2;
-      // const B = (-rho[n - 1][m] * u[n - 1][m]) / (2 * h) + V / h ** 2;
-      // const C = rho[n - 1][m] / tau + (2 * V) / h ** 2;
-      // const F =
-      //   (rho[n - 1][m] * u[n - 1][m]) / tau +
-      //   f?.evaluate({ t: tau * (n - 1), x: h * m });
 
       // Вычисление коэф. альфа и бета и добавление их в массивы альф и бет
       alpha.push(B / (C - A * alpha[m - 1]));

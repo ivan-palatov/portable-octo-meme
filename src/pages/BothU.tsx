@@ -18,7 +18,9 @@ const BothU: React.FC = () => {
 
   return (
     <div className={classes.main}>
-      <Typography variant="h6">Модельная задача 3</Typography>
+      <Typography variant="h6">
+        Модельная задача 2, решённая системой
+      </Typography>
       <TeX
         block
         math="\rho_i\frac{\partial u_i}{\partial t} + \rho_i u_i\frac{\partial u_i}{\partial x}=\frac{\partial}{\partial x}\left(v_{i1}\frac{\partial u_1}{\partial x} + v_{i2}\frac{\partial u_2}{\partial x}\right) + (-1)^{i+1}a(u_2-u_1)"

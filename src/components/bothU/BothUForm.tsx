@@ -36,9 +36,9 @@ const useStyles = makeStyles((theme) => ({
 
 const initialValues = {
   u10: 'sin(pi*x)',
-  u20: 'sin(pi*x)',
-  rho1: 'e^(-t)*cos(pi*x)',
-  rho2: 'e^(-t)*cos(pi*x)',
+  u20: 'sin(2*pi*x)',
+  rho1: 'e^(t)*cos(pi*x/2)',
+  rho2: 'e^(-t)*cos(pi*x/2)',
   v11: 0.3,
   v12: 0,
   v21: 0,
@@ -48,11 +48,11 @@ const initialValues = {
   M: 50,
   T: 1,
   f1:
-    'e^(-t)*sin(pi*x)*(cos(pi*x)*(e^(-t)+pi*e^(-2*t)*cos(pi*x)-8*0+2*0.5)+0.3*pi^2-0.5)',
+    'e^t*(sin(pi*x)*(e^t*cos(pi*x/2)+e^(2*t)*cos(pi*x/2)*cos(pi*x) + 0.3*pi^2 + 0.5) + 0*4*pi^2*sin(2*pi*x)- 0.5*sin(2*pi*x))',
   f2:
-    'e^(-t)*sin(pi*x)*(cos(pi*x)*(e^(-t)+pi*e^(-2*t)*cos(pi*x)-8*0+2*0.5)+0.3*pi^2-0.5)',
-  u1Real: 'e^(-t)*sin(pi*x)',
-  u2Real: 'e^(-t)*sin(pi*x)',
+    'sin(2*pi*x)*(cos(pi*x/2)+2*pi*e^t*cos(pi*x/2)*cos(2*pi*x) + 0.3*e^t*4*pi^2 + 0.5*e^t) + e^t*sin(pi*x)*(0*pi^2 - 0.5)',
+  u1Real: 'e^(t)*sin(pi*x)',
+  u2Real: 'e^(t)*sin(2*pi*x)',
 };
 
 export type FormTypes = typeof initialValues;

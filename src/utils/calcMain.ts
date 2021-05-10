@@ -1,17 +1,18 @@
+import * as math from 'mathjs';
 import { areMatricesClose } from './areMatricesClose';
+import { calcBothU } from './calcBothU';
 import { calcMainRho } from './calcMainRho';
-import { calcMainU } from './calcMainU';
+import { makeArray } from './makeArray';
+import { makeMatrix } from './makeMatrix';
+import { matrixToObject } from './matrixToObject';
 
 interface IData {
   u10: number[][];
   u20: number[][];
   rho10: number[];
   rho20: number[];
-  v11: number;
-  v12: number;
-  v21: number;
-  v22: number;
-  a: number;
+  V: math.Matrix;
+  K: math.Matrix;
   epsilon: number;
   M: number;
   N: number;
@@ -20,7 +21,11 @@ interface IData {
   epsilon0: number;
 }
 
-export function calcMain(params: IData) {
+export function calcMain({ V, K, N, M, tau, h, ...params }: IData) {
+  const U0 = makeArray(M + 1, (i) =>
+    math.matrix([[params.u10[0][i]], [params.u20[0][i]]])
+  );
+
   const previous = {
     u1: [] as number[][],
     u2: [] as number[][],
@@ -37,54 +42,36 @@ export function calcMain(params: IData) {
   do {
     previous.u1 = current.u1;
     previous.u2 = current.u2;
+
     // Calculating rho1 and rho2 for the last known approximations of u1 and u2
     current.rho1 = calcMainRho(
       params.rho10,
       previous.u1,
-      params.M,
-      params.N,
+      M,
+      N,
       params.epsilon,
-      params.tau,
-      params.h
+      tau,
+      h
     );
     current.rho2 = calcMainRho(
       params.rho20,
       previous.u2,
-      params.M,
-      params.N,
+      M,
+      N,
       params.epsilon,
-      params.tau,
-      params.h
+      tau,
+      h
     );
 
-    // Calculating u1 and u2
-    current.u1 = calcMainU(
-      params.u10[0],
-      current.rho1,
-      previous.u2,
-      params.a,
-      params.v11,
-      params.v12,
-      params.epsilon,
-      params.M,
-      params.N,
-      params.tau,
-      params.h
+    const Rho = makeMatrix(N + 1, M + 1, (i, j) =>
+      math.matrix([
+        [current.rho1[j][i], 0],
+        [0, current.rho2[j][i]],
+      ])
     );
-
-    current.u2 = calcMainU(
-      params.u20[0],
-      current.rho2,
-      previous.u1, // возможно, лучше взять current.u1
-      params.a,
-      params.v22, // возможно, нужно поменять местами
-      params.v21,
-      params.epsilon,
-      params.M,
-      params.N,
-      params.tau,
-      params.h
-    );
+    const { u1, u2 } = matrixToObject(calcBothU(U0, Rho, V, K, M, N, tau, h));
+    current.u1 = u1;
+    current.u2 = u2;
 
     i++;
     console.log(i);

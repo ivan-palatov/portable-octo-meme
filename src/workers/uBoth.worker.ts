@@ -3,6 +3,7 @@ import { FormTypes } from '../components/bothU/BothUForm';
 import { calcBothU } from '../utils/calcBothU';
 import { makeArray } from '../utils/makeArray';
 import { makeMatrix } from '../utils/makeMatrix';
+import { matrixToObject } from '../utils/matrixToObject';
 
 const ctx: Worker = self as any;
 
@@ -46,23 +47,14 @@ ctx.onmessage = (e) => {
   ]);
 
   const K = math.matrix([
-    [a, -a],
     [-a, a],
+    [a, -a],
   ]);
 
   // Вычисление численного решения
   const matrixArray = calcBothU(U0, Rho, V, K, M, N, tau, h, F);
 
-  const result = { u1: [] as number[][], u2: [] as number[][] };
-
-  matrixArray.forEach((arr, i) => {
-    result.u1.push([]);
-    result.u2.push([]);
-    arr.forEach((matrix, j) => {
-      result.u1[i].push(matrix.get([0, 0]));
-      result.u2[i].push(matrix.get([1, 0]));
-    });
-  });
+  const result = matrixToObject(matrixArray);
 
   const u1Real = makeMatrix(N + 1, M + 1, (i, j) =>
     math.evaluate(data.u1Real, { x: x[j], t: t[i] })

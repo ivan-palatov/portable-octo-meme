@@ -38,14 +38,21 @@ ctx.onmessage = (e) => {
     math.evaluate(data.u20, { x: x[j] })
   );
 
+  const V = math.matrix([
+    [v11, v12],
+    [v21, v22],
+  ]);
+
+  const K = math.matrix([
+    [-a, a],
+    [a, -a],
+  ]);
+
   const results = calcMain({
     M,
     N,
-    a,
-    v11,
-    v12,
-    v21,
-    v22,
+    K,
+    V,
     epsilon,
     epsilon0,
     tau,

@@ -56,14 +56,11 @@ const App = () => {
           <Link variant="body1" component={RouterLink} to="/rho">
             Модельная задача 1
           </Link>
-          <Link variant="body1" component={RouterLink} to="/u">
-            Модельная задача 2
+          <Link variant="body1" component={RouterLink} to="/both-u">
+            Модельная задача 2 (решённая системой)
           </Link>
           <Link variant="body1" component={RouterLink} to="/u-main">
-            Модельная задача 2.5
-          </Link>
-          <Link variant="body1" component={RouterLink} to="/both-u">
-            Система для Ui
+            Модельная задача 2
           </Link>
         </div>
         <Switch>
