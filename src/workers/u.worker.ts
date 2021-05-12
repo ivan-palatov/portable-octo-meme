@@ -1,64 +1,49 @@
 import * as math from 'mathjs';
+import { FormTypes } from '../components/u/UForm';
 import { calcU } from '../utils/calcU';
+import { makeArray } from '../utils/makeArray';
+import { makeMatrix } from '../utils/makeMatrix';
 
 const ctx: Worker = self as any;
 
 ctx.onmessage = (e) => {
-  const { u0, rho: rhoFunc, f, V, N, M, T, u } = e.data;
+  const { N, M, T, a, v1, v2, ...data } = e.data as FormTypes;
+  console.log('Starting u worker');
 
-  const rho = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) =>
-          math.evaluate(rhoFunc, {
-            t: i * (T / N),
-            x: j / M,
-          })
-        )
-    );
+  const h = 1 / M;
+  const tau = T / N;
 
-  const res = calcU({
-    u0: math.parse(u0),
-    f: math.parse(f),
-    V: math.evaluate(V),
-    M,
-    N,
-    T,
-    rho,
-  });
+  const x = makeArray(M + 1, (i) => i * h);
+  const t = makeArray(N + 1, (i) => i * tau);
 
-  const x = Array(M + 1)
-    .fill(0)
-    .map((_, i) => i * (1 / M));
-  const y = Array(N + 1)
-    .fill(0)
-    .map((_, i) => i * (T / N));
+  const u0 = makeArray(M + 1, (i) => math.evaluate(data.u0, { x: x[i] }));
+  const otherU = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.evaluate(data.uOther, { x: x[j], t: t[i] })
+  );
 
-  const actualF = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) => math.evaluate(u, { x: j * (1 / M), t: i * (T / N) }))
-    );
+  const rho = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.evaluate(data.rho, { x: x[j], t: t[i] })
+  );
 
-  const diff = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) => {
-          const actual = actualF[i][j];
-          return math.abs(actual - res[i][j]);
-        })
-    );
+  const f = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.evaluate(data.f, { x: x[j], t: t[i] })
+  );
+
+  // Получение численного решения
+  const result = calcU(u0, rho, otherU, a, v1, v2, 0.1, M, N, tau, h, f);
+
+  const uReal = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.evaluate(data.uReal, { x: x[j], t: t[i] })
+  );
+
+  const diff = makeMatrix(N + 1, M + 1, (i, j) =>
+    Math.abs(result[i][j] - uReal[i][j])
+  );
 
   ctx.postMessage({
-    plot: { x, y, z: res, type: 'surface' },
-    actualFunction: { x, y, z: actualF, type: 'surface' },
-    difference: { x, y, z: diff, type: 'surface' },
+    u: { x, y: t, z: result, type: 'surface' },
+    uReal: { x, y: t, z: uReal, type: 'surface' },
+    diff: { x, y: t, z: diff, type: 'surface' },
   });
 };
 

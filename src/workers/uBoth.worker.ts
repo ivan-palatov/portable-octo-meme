@@ -1,6 +1,7 @@
 import * as math from 'mathjs';
 import { FormTypes } from '../components/bothU/BothUForm';
 import { calcBothU } from '../utils/calcBothU';
+import { calcGMatrix } from '../utils/calcFunctions';
 import { makeArray } from '../utils/makeArray';
 import { makeMatrix } from '../utils/makeMatrix';
 import { matrixToObject } from '../utils/matrixToObject';
@@ -8,7 +9,19 @@ import { matrixToObject } from '../utils/matrixToObject';
 const ctx: Worker = self as any;
 
 ctx.onmessage = (e) => {
-  const { a, v11, v12, v21, v22, N, M, T, ...data } = e.data as FormTypes;
+  const {
+    a,
+    v11,
+    v12,
+    v21,
+    v22,
+    N,
+    M,
+    T,
+    gamma1,
+    gamma2,
+    ...data
+  } = e.data as FormTypes;
   console.log('Starting uBoth worker');
 
   const h = 1 / M;
@@ -31,20 +44,25 @@ ctx.onmessage = (e) => {
     ])
   );
 
-  const F =
-    data.f1 && data.f2
-      ? makeMatrix(N + 1, M + 1, (i, j) =>
-          math.matrix([
-            [math.evaluate(data.f1, { x: x[j], t: t[i] })],
-            [math.evaluate(data.f2, { x: x[j], t: t[i] })],
-          ])
-        )
-      : undefined;
-
   const V = math.matrix([
     [v11, v12],
     [v21, v22],
   ]);
+
+  const F = calcGMatrix({
+    N,
+    M,
+    tau,
+    h,
+    a,
+    V,
+    gamma1,
+    gamma2,
+    rho1: data.rho1,
+    rho2: data.rho2,
+    u1: data.u1Real,
+    u2: data.u2Real,
+  });
 
   const K = math.matrix([
     [-a, a],
@@ -52,7 +70,7 @@ ctx.onmessage = (e) => {
   ]);
 
   // Вычисление численного решения
-  const matrixArray = calcBothU(U0, Rho, V, K, M, N, tau, h, F);
+  const matrixArray = calcBothU(U0, Rho, gamma1, gamma2, V, K, M, N, tau, h, F);
 
   const result = matrixToObject(matrixArray);
 

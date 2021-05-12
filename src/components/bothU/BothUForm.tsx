@@ -39,6 +39,8 @@ const initialValues = {
   u20: 'sin(2*pi*x)',
   rho1: 'e^(t)*cos(pi*x/2)',
   rho2: 'e^(-t)*cos(pi*x/2)',
+  gamma1: 1,
+  gamma2: 1.5,
   v11: 0.3,
   v12: 0,
   v21: 0,
@@ -47,10 +49,6 @@ const initialValues = {
   N: 100,
   M: 100,
   T: 1,
-  f1:
-    'e^t*(sin(pi*x)*(e^t*cos(pi*x/2)+pi*e^(2*t)*cos(pi*x/2)*cos(pi*x) + 0.3*pi^2 + 0.5) + 0*4*pi^2*sin(2*pi*x)- 0.5*sin(2*pi*x))',
-  f2:
-    'sin(2*pi*x)*(cos(pi*x/2)+2*pi*e^t*cos(pi*x/2)*cos(2*pi*x) + 0.3*e^t*4*pi^2 + 0.5*e^t) + e^t*sin(pi*x)*(0*pi^2 - 0.5)',
   u1Real: 'e^(t)*sin(pi*x)',
   u2Real: 'e^(t)*sin(2*pi*x)',
 };
@@ -97,6 +95,20 @@ const BothUForm: React.FC<IProps> = ({ runWorker, isLoading }) => {
         className={classes.input}
         label={<TeX math="\rho^0_2(x)" />}
         {...formik.getFieldProps('rho2')}
+      />
+      <TextField
+        id="gamma1"
+        className={classes.input}
+        type="number"
+        label={<TeX math="\gamma_1" />}
+        {...formik.getFieldProps('gamma1')}
+      />
+      <TextField
+        id="gamma2"
+        className={classes.input}
+        type="number"
+        label={<TeX math="\gamma_2" />}
+        {...formik.getFieldProps('gamma2')}
       />
       <TextField
         id="v11"
@@ -152,18 +164,6 @@ const BothUForm: React.FC<IProps> = ({ runWorker, isLoading }) => {
         label="Кол-во разбиений по x"
         type="number"
         {...formik.getFieldProps('M')}
-      />
-      <TextField
-        id="f1"
-        className={classes.input}
-        label={<TeX math="f_1(x,t)" />}
-        {...formik.getFieldProps('f1')}
-      />
-      <TextField
-        id="f2"
-        className={classes.input}
-        label={<TeX math="f_2(x,t)" />}
-        {...formik.getFieldProps('f2')}
       />
       <TextField
         id="u1Real"

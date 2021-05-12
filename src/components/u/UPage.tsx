@@ -1,6 +1,6 @@
 import { Data } from 'plotly.js';
 import React, { useReducer } from 'react';
-import Worker from '../../workers/uMain.worker';
+import Worker from '../../workers/u.worker';
 import UForm, { FormTypes } from './UForm';
 import UPlots from './UPlots';
 

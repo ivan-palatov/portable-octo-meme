@@ -35,10 +35,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const initialValues = {
-  u10: 'sin(2*pi*x)',
-  u20: 'sin(5*pi*x)',
-  rho10: 'cos(pi*x)+3/2',
-  rho20: 'x+1',
+  u10: 'sin(pi*x)',
+  u20: 'sin(2*pi*x)',
+  rho10: 'cos(pi*x)+2',
+  rho20: 'cos(pi*x)+2',
+  gamma1: 1.5,
+  gamma2: 2,
   v11: 0.3,
   v12: 0,
   v21: 0,
@@ -49,6 +51,10 @@ const initialValues = {
   M: 50,
   T: 1,
   epsilon0: 0.1,
+  u1: 'e^t*sin(pi*x)',
+  u2: 'e^t*sin(2*pi*x)',
+  rho1: 'e^t*(cos(pi*x)+2)',
+  rho2: 'e^(-t)*(cos(pi*x)+2)',
 };
 
 export type FormTypes = typeof initialValues;
@@ -95,6 +101,20 @@ const ResultForm: React.FC<IProps> = ({ runWorker, isLoading }) => {
         {...formik.getFieldProps('rho20')}
       />
       <TextField
+        id="gamma1"
+        className={classes.input}
+        type="number"
+        label={<TeX math="\gamma_1" />}
+        {...formik.getFieldProps('gamma1')}
+      />
+      <TextField
+        id="gamma2"
+        className={classes.input}
+        type="number"
+        label={<TeX math="\gamma_2" />}
+        {...formik.getFieldProps('gamma2')}
+      />
+      <TextField
         id="v11"
         className={classes.input}
         type="number"
@@ -137,6 +157,7 @@ const ResultForm: React.FC<IProps> = ({ runWorker, isLoading }) => {
         {...formik.getFieldProps('a')}
       />
       <TextField
+        id="T"
         className={classes.input}
         label={<TeX math="T" />}
         type="number"
@@ -167,6 +188,30 @@ const ResultForm: React.FC<IProps> = ({ runWorker, isLoading }) => {
         }
         type="number"
         {...formik.getFieldProps('epsilon0')}
+      />
+      <TextField
+        id="u1"
+        className={classes.input}
+        label={<TeX math="u_1" />}
+        {...formik.getFieldProps('u1')}
+      />
+      <TextField
+        id="u2"
+        className={classes.input}
+        label={<TeX math="u_2" />}
+        {...formik.getFieldProps('u2')}
+      />
+      <TextField
+        id="rho1"
+        className={classes.input}
+        label={<TeX math="\rho_1" />}
+        {...formik.getFieldProps('rho1')}
+      />
+      <TextField
+        id="rho2"
+        className={classes.input}
+        label={<TeX math="\rho_2" />}
+        {...formik.getFieldProps('rho2')}
       />
       <div className={classes.wrapper}>
         <Button

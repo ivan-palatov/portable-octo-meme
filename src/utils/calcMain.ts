@@ -1,7 +1,7 @@
 import * as math from 'mathjs';
 import { areMatricesClose } from './areMatricesClose';
 import { calcBothU } from './calcBothU';
-import { calcMainRho } from './calcMainRho';
+import { calcRho } from './calcRho';
 import { makeArray } from './makeArray';
 import { makeMatrix } from './makeMatrix';
 import { matrixToObject } from './matrixToObject';
@@ -14,11 +14,16 @@ interface IData {
   V: math.Matrix;
   K: math.Matrix;
   epsilon: number;
+  gamma1: number;
+  gamma2: number;
   M: number;
   N: number;
   tau: number;
   h: number;
   epsilon0: number;
+  f1?: number[][];
+  f2?: number[][];
+  G?: math.Matrix[][];
 }
 
 export function calcMain({ V, K, N, M, tau, h, ...params }: IData) {
@@ -44,23 +49,25 @@ export function calcMain({ V, K, N, M, tau, h, ...params }: IData) {
     previous.u2 = current.u2;
 
     // Calculating rho1 and rho2 for the last known approximations of u1 and u2
-    current.rho1 = calcMainRho(
+    current.rho1 = calcRho(
       params.rho10,
       previous.u1,
       M,
       N,
       params.epsilon,
       tau,
-      h
+      h,
+      params.f1
     );
-    current.rho2 = calcMainRho(
+    current.rho2 = calcRho(
       params.rho20,
       previous.u2,
       M,
       N,
       params.epsilon,
       tau,
-      h
+      h,
+      params.f2
     );
 
     const Rho = makeMatrix(N + 1, M + 1, (i, j) =>
@@ -69,22 +76,30 @@ export function calcMain({ V, K, N, M, tau, h, ...params }: IData) {
         [0, current.rho2[j][i]],
       ])
     );
-    const { u1, u2 } = matrixToObject(calcBothU(U0, Rho, V, K, M, N, tau, h));
+    const { u1, u2 } = matrixToObject(
+      calcBothU(
+        U0,
+        Rho,
+        params.gamma1,
+        params.gamma2,
+        V,
+        K,
+        M,
+        N,
+        tau,
+        h,
+        params.G
+      )
+    );
     current.u1 = u1;
     current.u2 = u2;
 
     i++;
-    console.log(i);
   } while (
-    !areMatricesClose(previous.u1, current.u1, params.epsilon0) ||
-    !areMatricesClose(previous.u2, current.u2, params.epsilon0) ||
-    i === 10
+    !areMatricesClose(previous.u1, current.u1, params.epsilon0) &&
+    !areMatricesClose(previous.u2, current.u2, params.epsilon0) &&
+    i !== 10
   );
-  // задать начальные u_i^0
-  // 1. Цикл по k пока разница между k-ыми решениями не будет меньше эпсилон (сравнение по u_i, наверное)
-  //      1) нахождение ро^i при начальных u_i^0
-  //      2) для полученных выше ро^i нахождение u_i
-  //      3) вместо начальных u_i^0 вписать полученные выше
 
   return { ...current, i };
 }

@@ -1,69 +1,44 @@
 import * as math from 'mathjs';
+import { calcAbsoluteDeviation } from '../utils/calcAbsoluteDeviation';
 import { calcRho } from '../utils/calcRho';
+import { makeArray } from '../utils/makeArray';
+import { makeMatrix } from '../utils/makeMatrix';
 
 const ctx: Worker = self as any;
 
 ctx.onmessage = (e) => {
-  const { M, N, T, u: ufunc, rho0, rho, epsilon, f } = e.data;
+  const { M, N, T, rho, epsilon, ...data } = e.data;
   console.log('Starting rho worker');
 
-  const u = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) =>
-          math.evaluate(ufunc, {
-            t: i * (T / N),
-            x: j / M,
-          })
-        )
-    );
+  const h = 1 / M;
+  const tau = T / N;
 
-  const res = calcRho({
-    rho0: math.parse(rho0),
-    f: math.parse(f),
-    epsilon: math.evaluate(epsilon),
-    M,
-    N,
-    T,
-    u,
-  });
+  const x = makeArray(M + 1, (i) => i * h);
+  const t = makeArray(N + 1, (i) => i * tau);
 
-  const x = Array(M + 1)
-    .fill(0)
-    .map((_, i) => i * (1 / M));
-  const y = Array(N + 1)
-    .fill(0)
-    .map((_, i) => i * (T / N));
+  const rho0 = makeArray(M + 1, (i) => math.evaluate(data.rho0, { x: x[i] }));
+  const u = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.evaluate(data.u, { x: x[j], t: t[i] })
+  );
 
-  const actualF = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) => math.evaluate(rho, { x: j * (1 / M), t: i * (T / N) }))
-    );
+  const f = data.f
+    ? makeMatrix(N + 1, M + 1, (i, j) =>
+        math.evaluate(data.f, { x: x[j], t: t[i] })
+      )
+    : undefined;
 
-  const diff = Array(N + 1)
-    .fill(0)
-    .map((_, i) =>
-      Array(M + 1)
-        .fill(0)
-        .map((_, j) => {
-          const actual = actualF[i][j];
-          // if (math.abs(actual) <= 0.00001) {
-          return math.abs(actual - res[i][j]);
-          // } else {
-          //   return math.abs((actual - res[i][j]) / actual);
-          // }
-        })
-    );
+  const res = calcRho(rho0, u, M, N, epsilon, tau, h, f);
+
+  const actualF = makeMatrix(N + 1, M + 1, (i, j) =>
+    math.evaluate(rho, { x: j * (1 / M), t: i * (T / N) })
+  );
+
+  const diff = calcAbsoluteDeviation(res, actualF);
 
   ctx.postMessage({
-    plot: { x, y, z: res, type: 'surface' },
-    actualFunction: { x, y, z: actualF, type: 'surface' },
-    difference: { x, y, z: diff, type: 'surface' },
+    plot: { x, y: t, z: res, type: 'surface' },
+    actualFunction: { x, y: t, z: actualF, type: 'surface' },
+    difference: { x, y: t, z: diff, type: 'surface' },
   });
 };
 

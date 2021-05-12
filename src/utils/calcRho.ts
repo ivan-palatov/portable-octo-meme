@@ -1,25 +1,15 @@
-import * as math from 'mathjs';
-
-interface IData {
-  T: number;
-  M: number;
-  N: number;
-  rho0: math.EvalFunction;
-  u: number[][];
-  epsilon: number;
-  f?: math.EvalFunction;
-}
-
-export function calcRho({ T, M, N, rho0, u, epsilon, f }: IData) {
-  const h = 1 / M;
-  const tau = T / N;
-
+export function calcRho(
+  rho0: number[],
+  u: number[][],
+  M: number,
+  N: number,
+  epsilon: number,
+  tau: number,
+  h: number,
+  f?: number[][]
+): number[][] {
   // Заполняем первый ряд по t из нач. усл.
-  const rho = [
-    Array(M + 1)
-      .fill(0)
-      .map((_, i) => rho0.evaluate({ x: i * h })),
-  ] as number[][];
+  const rho = [rho0];
 
   // Заполняем остальные ряды по времени t
   for (let n = 1; n <= N; n++) {
@@ -32,8 +22,7 @@ export function calcRho({ T, M, N, rho0, u, epsilon, f }: IData) {
       const A = u[n][m - 1] / h + epsilon / Math.pow(h, 2);
       const B = epsilon / Math.pow(h, 2);
       const C = 1 / tau + u[n][m] / h + (2 * epsilon) / Math.pow(h, 2);
-      const F =
-        +rho[n - 1][m] / tau + f?.evaluate({ t: tau * (n - 1), x: h * m });
+      const F = +rho[n - 1][m] / tau + (f ? f[n - 1][m] : 0);
 
       // Вычисление коэф. альфа и бета и добавление их в массивы альф и бет
       alpha.push(B / (C - A * alpha[m - 1]));

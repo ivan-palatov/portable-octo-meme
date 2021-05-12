@@ -11,8 +11,6 @@ interface IProps {
 }
 
 const UPlots: React.FC<IProps> = ({ data }) => {
-  if (!data.u) return null;
-
   return (
     <>
       <Plot3d data={[data.u]} title="Численное решение U" />

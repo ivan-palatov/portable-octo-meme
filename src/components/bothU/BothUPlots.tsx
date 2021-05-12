@@ -14,8 +14,6 @@ interface IProps {
 }
 
 const BothUPlots: React.FC<IProps> = ({ data }) => {
-  if (!data.u1) return null;
-
   return (
     <>
       <Plot3d data={[data.u1]} title="U1" />

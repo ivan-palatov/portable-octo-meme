@@ -11,8 +11,7 @@ import {
 import BothU from './pages/BothU';
 import Result from './pages/Result';
 import Rho from './pages/Rho';
-import U from './pages/U';
-import UMain from './pages/UMain';
+import { default as U, default as UMain } from './pages/U';
 
 const mainElement = document.createElement('div');
 mainElement.setAttribute('id', 'root');
