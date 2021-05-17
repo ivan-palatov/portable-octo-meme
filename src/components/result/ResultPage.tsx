@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core';
 import { Data } from 'plotly.js';
 import React, { useReducer } from 'react';
-import Worker from '../../workers/main.worker';
+import Worker from '../../workers/result.worker';
 import ResultForm, { FormTypes } from './ResultForm';
 import ResultPlots from './ResultPlots';
 

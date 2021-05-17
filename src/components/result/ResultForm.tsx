@@ -37,23 +37,26 @@ const useStyles = makeStyles((theme) => ({
 const initialValues = {
   u10: 'sin(pi*x)',
   u20: 'sin(2*pi*x)',
-  rho10: 'cos(pi*x)+2',
+  rho10: 'cos(pi*x)+3',
   rho20: 'cos(pi*x)+2',
-  gamma1: 1.5,
-  gamma2: 2,
-  v11: 0.3,
+  gamma1: 0,
+  gamma2: 0,
+  v11: 1,
   v12: 0,
   v21: 0,
-  v22: 0.3,
+  v22: 1,
   epsilon: 0.1,
+  delta: 0,
+  beta1: 1,
+  beta2: 1,
   a: 0.5,
   N: 50,
   M: 50,
   T: 1,
   epsilon0: 0.1,
-  u1: 'e^t*sin(pi*x)',
-  u2: 'e^t*sin(2*pi*x)',
-  rho1: 'e^t*(cos(pi*x)+2)',
+  u1: 'e^(-t)*sin(pi*x)',
+  u2: 'e^(-t)*sin(2*pi*x)',
+  rho1: 'e^(-t)*(cos(pi*x)+3)',
   rho2: 'e^(-t)*(cos(pi*x)+2)',
 };
 
@@ -148,6 +151,27 @@ const ResultForm: React.FC<IProps> = ({ runWorker, isLoading }) => {
         type="number"
         label={<TeX math="\varepsilon" />}
         {...formik.getFieldProps('epsilon')}
+      />
+      <TextField
+        id="delta"
+        className={classes.input}
+        type="number"
+        label={<TeX math="\delta" />}
+        {...formik.getFieldProps('delta')}
+      />
+      <TextField
+        id="beta1"
+        className={classes.input}
+        type="number"
+        label={<TeX math="\beta_1" />}
+        {...formik.getFieldProps('beta1')}
+      />
+      <TextField
+        id="beta2"
+        className={classes.input}
+        type="number"
+        label={<TeX math="\beta_2" />}
+        {...formik.getFieldProps('beta2')}
       />
       <TextField
         id="a"
