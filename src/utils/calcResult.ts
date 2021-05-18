@@ -99,22 +99,22 @@ export function calcResult(
       const An = math.add(
         math.multiply(1 / (2 * h), B),
         math.multiply(1 / h ** 2, C)
-      );
+      ); // m - 1
 
       const Bn = math.add(
         math.multiply(-1 / (2 * h), B),
         math.multiply(1 / h ** 2, C)
-      );
+      ); // m + 1
 
-      const Cn = math.add(
-        math.multiply(1 / tau, A),
-        math.multiply(2 / h ** 2, C)
-      );
+      const Cn = math.subtract(
+        math.add(math.multiply(1 / tau, A), math.multiply(2 / h ** 2, C)),
+        F
+      ); // m
 
       const Fn = math.add(
         math.multiply(math.multiply(1 / tau, A), X[n - 1][m]),
-        math.add(math.multiply(F, X[n - 1][m]), Phi[n - 1][m])
-      );
+        Phi[n - 1][m]
+      ); // n - 1
 
       const inverseW = math.inv(
         math.subtract(Cn, math.multiply(An, alpha[m - 1])) as math.Matrix

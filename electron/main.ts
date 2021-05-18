@@ -16,6 +16,11 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
     },
+    title:
+      'Одномерное движение смеси вязкой сжимаемой жидкости с плоскими волнами',
+    autoHideMenuBar: true,
+    minHeight: 100,
+    minWidth: 300,
   });
 
   if (process.env.NODE_ENV === 'development') {

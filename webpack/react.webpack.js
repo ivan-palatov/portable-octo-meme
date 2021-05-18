@@ -65,5 +65,10 @@ module.exports = {
     filename: 'js/[name].js',
     publicPath: './',
   },
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({
+      title:
+        'Одномерное движение смеси вязкой сжимаемой жидкости с плоскими волнами',
+    }),
+  ],
 };

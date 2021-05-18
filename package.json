@@ -17,7 +17,12 @@
     "package:dist": "electron-builder --dir --win portable"
   },
   "keywords": [],
-  "author": "Ivan Palatov <ivanakazver3d@gmail.com>",
+  "author": {
+    "name": "Ivan Palatov",
+    "email": "ivanakazver3d@gmail.com"
+  },
+  "repository": "https://github.com/ZVER3D/portable-octo-meme",
+  "homepage": "https://github.com/ZVER3D/portable-octo-meme",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.14.0",
@@ -88,6 +93,8 @@
     "mac": {
       "category": "public.app-category.video"
     },
+    "productName": "Одномерное движение смеси вязкой сжимаемой жидкости с плоскими волнами",
+    "copyright": "Copyright © 2021 Palatov Ivan Aleksandrovich",
     "win": {
       "target": [
         {
@@ -100,7 +107,8 @@
       ]
     },
     "directories": {
-      "output": "packages"
+      "output": "packages",
+      "buildResources": "build"
     },
     "files": [
       "package.json",
