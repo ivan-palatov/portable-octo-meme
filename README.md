@@ -1,45 +1,23 @@
-## Demo
+## Демо
 
 https://competent-cori-ad9d6c.netlify.app/
 
-## Installation
+## Установка
 
-Use a package manager of your choice (npm, yarn, etc.) in order to install all dependencies
+Для установки используйте установщик из одной из опубликованных версий приложения для Вашей системы.
 
-```bash
-npm install
-```
+Кроме того, программу можно скомпилировать из исходного кода, для этого необходимо установить на Ваш компьютер среду разработки [Node.js](https://nodejs.org/) версии не ниже 10.x. Далее следовать инструкциям:
 
-```bash
-yarn install
-```
+1. Скачать исходный код программы из данного репозитория
+1. Разархивировать полученный архив, открыть директорию с разархивированным кодом
+1. Выполнить в этой директории с помощью терминала или консоли следующую команду:
+   `bash npm install && npm run package `
+1. Запустить сгенерированное в директории `packages` приложение для вашей операционной системы
 
-## Usage
+## Использование
 
-In order to run this project 2 scripts will need to be executed `dev:react` and `dev:electron`, run each one in a different terminal and always run `dev:react` before `dev:electron`, or `dev` to run them in order automatically
+Для использования программы введите нужные Вам значения в соответствующие поля ввода в программе и нажмите кнопку "Запустить". В зависимости от количества разбиений по времени и пространству, а также характеристик вашего компьютера, программе может потребоваться от нескольких секунд до нескольких минут.
 
-```bash
-npm run dev:react
-```
-
-```bash
-npm run dev:electron
-```
-
-or
-
-```bash
-npm run dev
-```
-
-## Packaging
-
-To generate a project package run `package`
-
-```bash
-npm run package
-```
-
-## License
+## Лицензия
 
 [MIT](https://choosealicense.com/licenses/mit/)

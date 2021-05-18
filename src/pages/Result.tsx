@@ -25,7 +25,7 @@ const Result: React.FC = () => {
       />
       <TeX
         block
-        math="\frac{\partial \left(u_i\rho_i\right)}{\partial t} + \frac{\partial \left(u_i^2\rho_i\right)}{\partial x} + \frac{\partial \rho_i^{\gamma_i}}{\partial x} + \varepsilon\frac{\partial u_i}{\partial x}\frac{\partial \rho_i}{\partial x} + \delta\frac{\partial \rho_i^{\beta_i}}{\partial x}=\frac{\partial}{\partial x}\left(v_{i1}\frac{\partial u_1}{\partial x} + v_{i2}\frac{\partial u_2}{\partial x}\right) + (-1)^{i+1}a(u_2-u_1)"
+        math="\frac{\partial \left(u_i\rho_i\right)}{\partial t} + \frac{\partial \left(u_i^2\rho_i\right)}{\partial x} + \frac{\partial \rho_i^{\gamma_i}}{\partial x} + \varepsilon\frac{\partial u_i}{\partial x}\frac{\partial \rho_i}{\partial x} + \delta\frac{\partial \rho_i^{\beta_i}}{\partial x}=\frac{\partial}{\partial x}\left(\nu_{i1}\frac{\partial u_1}{\partial x} + \nu_{i2}\frac{\partial u_2}{\partial x}\right) + (-1)^{i+1}a(u_2-u_1)"
       />
       <TeX block math="x\in [0,1],\quad t\in [0,T],\quad i=1,2" />
       <TeX
@@ -39,6 +39,10 @@ const Result: React.FC = () => {
       <TeX
         block
         math="\varepsilon \to 0,\quad \delta \to 0,\quad \beta_i > 1,\quad \gamma_i > 1,\quad a > 0,\quad i=1,2"
+      />
+      <TeX
+        block
+        math="\nu_{ij}=\lambda_{ij} + 2\mu_{ij},\quad i=1,2,\quad j=1,2"
       />
       <ResultPage />
     </div>

@@ -20,7 +20,6 @@ interface IAction {
 
 const initialState = {
   isLoading: false,
-  iterations: 0,
   data: {} as { u1: Data; u2: Data; rho1: Data; rho2: Data },
 };
 
@@ -31,8 +30,6 @@ function reducer(
   switch (action.type) {
     case EAction.TOGGLE_LOADING:
       return { ...state, isLoading: !state.isLoading };
-    case EAction.UPDATE_ITERATIONS:
-      return { ...state, iterations: action.payload!.iterations };
     case EAction.UPDATE_DATA:
       return { ...state, data: action.payload!.data };
     default:
@@ -57,7 +54,6 @@ const ResultPage: React.FC<IProps> = () => {
     worker.onmessage = (e) => {
       const { iterations, ...data } = e.data;
       dispatch({ type: EAction.UPDATE_DATA, payload: { data } });
-      dispatch({ type: EAction.UPDATE_ITERATIONS, payload: { iterations } });
       dispatch({ type: EAction.TOGGLE_LOADING });
     };
   }
@@ -65,11 +61,6 @@ const ResultPage: React.FC<IProps> = () => {
   return (
     <>
       <ResultForm runWorker={runWorker} isLoading={state.isLoading} />
-      {state.iterations !== 0 && (
-        <Typography variant="h6">
-          Количество итераций: {state.iterations}
-        </Typography>
-      )}
       <ResultPlots data={state.data} />
     </>
   );

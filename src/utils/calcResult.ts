@@ -137,10 +137,10 @@ export function calcResult(
             [0, 0, 1, 0],
             [0, 0, 0, 1],
           ]),
-          alpha[alpha.length - 2]
+          alpha[alpha.length - 1]
         ) as math.Matrix
       ),
-      beta[beta.length - 2]
+      beta[beta.length - 1]
     ) as math.Matrix; // в последних 2-х должны быть нули
     Xn[Xn.length - 1].set([2, 0], 0);
     Xn[Xn.length - 1].set([3, 0], 0);
