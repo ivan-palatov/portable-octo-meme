@@ -108,8 +108,8 @@ const validationSchema = Yup.object().shape({
 const initialValues = {
   u10: 'sin(pi*x)',
   u20: 'sin(2*pi*x)',
-  rho10: 'cos(pi*x)+3',
-  rho20: 'cos(pi*x)+2',
+  rho10: 'cos(pi*x)+5',
+  rho20: 'cos(pi*x)+4',
   gamma1: 2,
   gamma2: 1.1,
   v11: 1,
@@ -121,13 +121,13 @@ const initialValues = {
   beta1: 1.1,
   beta2: 1.1,
   a: 0.5,
-  N: 50,
-  M: 50,
+  N: 150,
+  M: 150,
   T: 1,
   u1: 'e^(-t)*sin(pi*x)',
   u2: 'e^(-t)*sin(2*pi*x)',
-  rho1: 'e^(-t)*(cos(pi*x)+3)',
-  rho2: 'e^(-t)*(cos(pi*x)+2)',
+  rho1: 'e^(t/10)*(cos(pi*x)+5)',
+  rho2: 'e^(t/10)*(cos(pi*x)+4)',
 };
 
 export type FormTypes = typeof initialValues;

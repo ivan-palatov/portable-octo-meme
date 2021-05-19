@@ -20,7 +20,6 @@ ctx.onmessage = (e) => {
     v21,
     v22,
     epsilon,
-    epsilon0,
     gamma1,
     gamma2,
     ...data
