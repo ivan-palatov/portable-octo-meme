@@ -6,6 +6,7 @@ import Plot from 'react-plotly.js';
 interface IProps {
   title?: string | JSX.Element;
   data?: (Data | undefined)[];
+  zaxis: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -17,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Plot3d: React.FC<IProps> = ({ data, title }) => {
+const Plot3d: React.FC<IProps> = ({ data, title, zaxis }) => {
   const classes = useStyles();
 
   if (!data || data.length === 0 || !data[0]) {
@@ -30,7 +31,7 @@ const Plot3d: React.FC<IProps> = ({ data, title }) => {
       <Plot
         data={data as any}
         layout={{
-          scene: { yaxis: { title: 't' }, zaxis: { title: 'p' } },
+          scene: { yaxis: { title: 't' }, zaxis: { title: zaxis } },
           autosize: true,
           title: '',
         }}

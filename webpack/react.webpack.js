@@ -69,6 +69,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title:
         'Одномерное движение смеси вязкой сжимаемой жидкости с плоскими волнами',
+      // template: path.resolve(rootPath, 'index.html'),
     }),
   ],
 };

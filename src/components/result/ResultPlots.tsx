@@ -25,6 +25,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
     <>
       <Plot3d
         data={[data.u1]}
+        zaxis="u1(x,t)"
         title={
           <>
             Численное решение <TeX block math="u_1(x, t)" />
@@ -33,6 +34,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
       />
       <Plot3d
         data={[data.u1Real]}
+        zaxis="u1(x,t)"
         title={
           <>
             Точное решение <TeX block math="u_1(x, t)" />
@@ -41,6 +43,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
       />
       <Plot3d
         data={[data.u1Diff]}
+        zaxis="z"
         title={
           <>
             Погрешность <TeX block math="u_1(x, t)" />
@@ -49,6 +52,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
       />
       <Plot3d
         data={[data.u2]}
+        zaxis="u2(x,t)"
         title={
           <>
             Численное решение <TeX block math="u_2(x, t)" />
@@ -57,6 +61,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
       />
       <Plot3d
         data={[data.u2Real]}
+        zaxis="u2(x,t)"
         title={
           <>
             Точное решение <TeX block math="u_2(x, t)" />
@@ -65,6 +70,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
       />
       <Plot3d
         data={[data.u2Diff]}
+        zaxis="z"
         title={
           <>
             Погрешность <TeX block math="u_2(x, t)" />
@@ -73,6 +79,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
       />
       <Plot3d
         data={[data.rho1]}
+        zaxis="P1(x,t)"
         title={
           <>
             Численное решение <TeX block math="\rho_1(x, t)" />
@@ -81,6 +88,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
       />
       <Plot3d
         data={[data.rho1Real]}
+        zaxis="P1(x,t)"
         title={
           <>
             Точное решение <TeX block math="\rho_1(x, t)" />
@@ -89,6 +97,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
       />
       <Plot3d
         data={[data.rho1Diff]}
+        zaxis="z"
         title={
           <>
             Погрешность <TeX block math="\rho_1(x, t)" />
@@ -97,6 +106,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
       />
       <Plot3d
         data={[data.rho2]}
+        zaxis="P2(x,t)"
         title={
           <>
             Численное решение <TeX block math="\rho_2(x, t)" />
@@ -105,6 +115,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
       />
       <Plot3d
         data={[data.rho2Real]}
+        zaxis="P2(x,t)"
         title={
           <>
             Точное решение <TeX block math="\rho_2(x, t)" />
@@ -113,6 +124,7 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
       />
       <Plot3d
         data={[data.rho2Diff]}
+        zaxis="z"
         title={
           <>
             Погрешность <TeX block math="\rho_2(x, t)" />
