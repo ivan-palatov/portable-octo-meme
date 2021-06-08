@@ -20,7 +20,7 @@ interface IProps {
   };
 }
 
-const ResultPlots: React.FC<IProps> = ({ data }) => {
+const ResultPlots3d: React.FC<IProps> = ({ data }) => {
   return (
     <>
       <Plot3d
@@ -135,4 +135,4 @@ const ResultPlots: React.FC<IProps> = ({ data }) => {
   );
 };
 
-export default React.memo(ResultPlots);
+export default React.memo(ResultPlots3d);

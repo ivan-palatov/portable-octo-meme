@@ -1,9 +1,10 @@
-import { Typography } from '@material-ui/core';
 import { Data } from 'plotly.js';
 import React, { useReducer } from 'react';
 import Worker from '../../workers/result.worker';
+import ResultDownload from './ResultDownload';
 import ResultForm, { FormTypes } from './ResultForm';
-import ResultPlots from './ResultPlots';
+import ResultPlots2d from './ResultPlots2d';
+import ResultPlots3d from './ResultPlots3d';
 
 interface IProps {}
 
@@ -20,7 +21,14 @@ interface IAction {
 
 const initialState = {
   isLoading: false,
-  data: {} as { u1: Data; u2: Data; rho1: Data; rho2: Data },
+  data: {} as {
+    u1: Data;
+    u2: Data;
+    rho1: Data;
+    rho2: Data;
+    plotType: 'surface' | 'scatter' | '';
+    results: { [x: string]: number[][] };
+  },
 };
 
 function reducer(
@@ -52,7 +60,7 @@ const ResultPage: React.FC<IProps> = () => {
     };
 
     worker.onmessage = (e) => {
-      const { iterations, ...data } = e.data;
+      const data = e.data;
       dispatch({ type: EAction.UPDATE_DATA, payload: { data } });
       dispatch({ type: EAction.TOGGLE_LOADING });
     };
@@ -61,7 +69,13 @@ const ResultPage: React.FC<IProps> = () => {
   return (
     <>
       <ResultForm runWorker={runWorker} isLoading={state.isLoading} />
-      <ResultPlots data={state.data} />
+      <ResultDownload
+        data={
+          state.data.plotType === 'scatter' ? state.data.results : state.data
+        }
+      />
+      {state.data.plotType === 'surface' && <ResultPlots3d data={state.data} />}
+      {state.data.plotType === 'scatter' && <ResultPlots2d data={state.data} />}
     </>
   );
 };

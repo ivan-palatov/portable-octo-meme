@@ -1,5 +1,6 @@
 import TeX from '@matejmazur/react-katex';
-import { makeStyles, Typography } from '@material-ui/core';
+import { Link, makeStyles, Typography } from '@material-ui/core';
+import { GitHub } from '@material-ui/icons';
 import React from 'react';
 import ResultPage from '../components/result/ResultPage';
 
@@ -10,6 +11,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     maxWidth: '600px',
     margin: '0 auto',
+  },
+  links: {
+    margin: '30px auto',
   },
 }));
 
@@ -45,6 +49,16 @@ const Result: React.FC = () => {
         math="\nu_{ij}=\lambda_{ij} + 2\mu_{ij},\quad i=1,2,\quad j=1,2"
       />
       <ResultPage />
+      <div className={classes.links}>
+        <Link
+          target="_blank"
+          href="https://github.com/ZVER3D/portable-octo-meme"
+        >
+          <span>
+            <GitHub /> Исходный код программы
+          </span>
+        </Link>
+      </div>
     </div>
   );
 };

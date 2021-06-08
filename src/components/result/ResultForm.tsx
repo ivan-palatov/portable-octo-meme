@@ -4,6 +4,7 @@ import {
   CircularProgress,
   Divider,
   makeStyles,
+  MenuItem,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -103,6 +104,7 @@ const validationSchema = Yup.object().shape({
   u2: Yup.string().optional(),
   rho1: Yup.string().optional(),
   rho2: Yup.string().optional(),
+  plotType: Yup.mixed().optional(),
 });
 
 const initialValues = {
@@ -124,10 +126,11 @@ const initialValues = {
   N: 50,
   M: 50,
   T: 1,
-  u1: 'e^(-t)*sin(pi*x)',
-  u2: 'e^(-t)*sin(2*pi*x)',
-  rho1: 'e^(t/10)*(cos(pi*x)+3)',
-  rho2: 'e^(t/10)*(cos(pi*x)+2)',
+  u1: '',
+  u2: '',
+  rho1: '',
+  rho2: '',
+  plotType: 'surface' as 'surface' | 'scatter' | '',
 };
 
 export type FormTypes = typeof initialValues;
@@ -356,6 +359,25 @@ const ResultForm: React.FC<IProps> = ({ runWorker, isLoading }) => {
         error={!!formik.errors.rho2 && formik.touched.rho2}
         helperText={formik.touched.rho2 && formik.errors.rho2}
       />
+      <Typography className={classes.divider} variant="caption">
+        Отрисовка графиков
+      </Typography>
+      <TextField
+        id="plotType"
+        className={classes.input}
+        {...formik.getFieldProps('plotType')}
+        select
+      >
+        <MenuItem key="surface" value="surface">
+          Трёхмерные
+        </MenuItem>
+        <MenuItem key="scatter" value="scatter">
+          Линии уровня
+        </MenuItem>
+        <MenuItem key="false" value="">
+          Без отрисовки
+        </MenuItem>
+      </TextField>
       <div className={classes.wrapper}>
         <Button
           style={{ marginTop: 10 }}

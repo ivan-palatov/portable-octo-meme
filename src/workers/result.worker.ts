@@ -3,6 +3,10 @@ import { FormTypes } from '../components/result/ResultForm';
 import { calcAbsoluteDeviation } from '../utils/calcAbsoluteDeviation';
 import { calcFGMatrix } from '../utils/calcFunctions';
 import { calcResult } from '../utils/calcResult';
+import {
+  createScatterPlotData,
+  createSurfacePlotData,
+} from '../utils/createPlotData';
 import { getValueMatrix } from '../utils/getValueMatrix';
 import { makeArray } from '../utils/makeArray';
 import { matrixToObject } from '../utils/matrixToObject';
@@ -22,9 +26,9 @@ ctx.onmessage = (e) => {
     epsilon,
     gamma1,
     gamma2,
+    plotType,
     ...data
   } = e.data as FormTypes;
-  console.log('Starting result worker');
 
   const h = 1 / M;
   const tau = T / N;
@@ -135,12 +139,18 @@ ctx.onmessage = (e) => {
 
   const results = matrixToObject(result);
 
-  ctx.postMessage({
-    u1: { x, y: t, z: results.u1, type: 'surface' },
-    u2: { x, y: t, z: results.u2, type: 'surface' },
-    rho1: { x, y: t, z: results.rho1, type: 'surface' },
-    rho2: { x, y: t, z: results.rho2, type: 'surface' },
-  });
+  if (plotType === 'scatter') {
+    ctx.postMessage({
+      ...createScatterPlotData(x, T, results),
+      plotType: 'scatter',
+      results,
+    });
+  } else {
+    ctx.postMessage({
+      ...createSurfacePlotData(x, t, results),
+      plotType,
+    });
+  }
 };
 
 export default {} as typeof Worker & { new (): Worker };

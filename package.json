@@ -1,6 +1,6 @@
 {
   "name": "electron-react-typescript",
-  "version": "0.9.1",
+  "version": "0.9.6",
   "description": "Численное решение для задачи об одномерном движении двухкомпонентной смеси вязкой жидкости с плоскими волнами",
   "main": "./dist/main.js",
   "scripts": {
@@ -80,7 +80,6 @@
     "@material-ui/icons": "^4.11.2",
     "formik": "^2.2.6",
     "katex": "^0.13.5",
-    "mathjax": "3",
     "mathjs": "^9.3.2",
     "plotly.js": "^1.58.4",
     "react": "^17.0.2",
@@ -90,10 +89,7 @@
     "yup": "^0.32.9"
   },
   "build": {
-    "appId": "your.id",
-    "mac": {
-      "category": "public.app-category.video"
-    },
+    "appId": "dev.ipalatov.vkr",
     "productName": "Одномерное движение смеси вязкой сжимаемой жидкости с плоскими волнами",
     "copyright": "Copyright © 2021 Palatov Ivan Aleksandrovich",
     "win": {

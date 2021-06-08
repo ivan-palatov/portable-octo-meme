@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -30,6 +30,11 @@ function createWindow() {
       })
     );
   }
+
+  mainWindow.webContents.on('new-window', function (e, url) {
+    e.preventDefault();
+    shell.openExternal(url);
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
