@@ -1,37 +1,27 @@
 export function createSurfacePlotData(
   x: number[],
   t: number[],
-  results: {
-    rho1: number[][];
-    rho2: number[][];
-    u1: number[][];
-    u2: number[][];
-  }
+  results: Record<string, number[][]>
 ) {
-  return {
-    u1: { x, y: t, z: results.u1, type: 'surface' },
-    u2: { x, y: t, z: results.u2, type: 'surface' },
-    rho1: { x, y: t, z: results.rho1, type: 'surface' },
-    rho2: { x, y: t, z: results.rho2, type: 'surface' },
-  };
+  const res = {} as Record<string, any>;
+  for (const [name, arr] of Object.entries(results)) {
+    res[name] = { x, y: t, z: arr, type: 'surface' };
+  }
+
+  return res;
 }
 
 export function createScatterPlotData(
   x: number[],
   T: number,
-  results: {
-    rho1: number[][];
-    rho2: number[][];
-    u1: number[][];
-    u2: number[][];
-  }
+  results: Record<string, number[][]>
 ) {
-  return {
-    u1: getScatterPlot(results.u1, x, T),
-    u2: getScatterPlot(results.u2, x, T),
-    rho1: getScatterPlot(results.rho1, x, T),
-    rho2: getScatterPlot(results.rho2, x, T),
-  };
+  const res = {} as Record<string, any>;
+  for (const [name, arr] of Object.entries(results)) {
+    res[name] = getScatterPlot(arr, x, T);
+  }
+
+  return res;
 }
 
 function getScatterPlot(arr: number[][], x: number[], T: number, N = 5) {
@@ -50,7 +40,7 @@ function getScatterPlot(arr: number[][], x: number[], T: number, N = 5) {
       x,
       y: arr[i],
       type: 'scatter',
-      name: `t=${((i / arr.length) * T).toPrecision(2)}`,
+      name: `t=${((i / (arr.length - 1)) * T).toPrecision(2)}`,
     });
   }
 
