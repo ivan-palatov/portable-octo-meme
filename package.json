@@ -1,6 +1,6 @@
 {
-  "name": "electron-react-typescript",
-  "version": "0.9.6",
+  "name": "mixture-of-fluids-app",
+  "version": "0.9.7",
   "description": "Численное решение для задачи об одномерном движении двухкомпонентной смеси вязкой жидкости с плоскими волнами",
   "main": "./dist/main.js",
   "scripts": {
@@ -90,7 +90,7 @@
   },
   "build": {
     "appId": "dev.ipalatov.vkr",
-    "productName": "Одномерное движение смеси вязкой сжимаемой жидкости с плоскими волнами",
+    "productName": "Mixture of fluids",
     "copyright": "Copyright © 2021 Palatov Ivan Aleksandrovich",
     "win": {
       "target": [
@@ -117,7 +117,7 @@
     "linux": {
       "target": [
         {
-          "target": "pacman",
+          "target": "AppImage",
           "arch": [
             "x64",
             "ia32"
@@ -125,6 +125,13 @@
         },
         {
           "target": "deb",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "snap",
           "arch": [
             "x64",
             "ia32"
