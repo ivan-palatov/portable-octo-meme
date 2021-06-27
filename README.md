@@ -36,7 +36,7 @@
 
 ### Контактная информация
 
-ipalatov@pm.com
+ipalatov@pm.me
 
 ## Лицензия
 
